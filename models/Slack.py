@@ -1,6 +1,6 @@
 from __future__ import division
 from models.Buses import Buses
-
+import numpy as np
 
 class Slack:
 
@@ -20,10 +20,14 @@ class Slack:
             Qinit (float): the initial reactive power that the slack bus is supplying
         """
         # You will need to implement the remainder of the __init__ function yourself.
-
+        self.Bus = Bus
+        self.Vset = Vset
+        self.ang = ang
+        self.Pinit = Pinit
+        self.Qinit = Qinit
         # initialize nodes
-        self.node_Vr_Slack = None
-        self.node_Vi_Slack = None
+        self.node_Vr_Slack = None #SINCE NO VMAG AND ANGLE CAN CALCULATE REAL AND IMAGNIARY SLACK VOLTAGE
+        self.node_Vi_Slack = None #These should probably be P and Q two be more representative
 
     def assign_nodes(self):
         """Assign the additional slack bus nodes for a slack bus.
@@ -31,8 +35,27 @@ class Slack:
         Returns:
             None
         """
-        self.node_Vr_Slack = Buses._node_index.__next__()
-        self.node_Vi_Slack = Buses._node_index.__next__()
+        self.node_P_Slack = Buses._node_index.__next__()#THIS BOTH ASSIGNS THE SLACK BUS NODES AND MAKES THE BUES NODE_INDEX COUNTER INCEMENT
+        self.node_Q_Slack = Buses._node_index.__next__()
 
     # You should also add some other class functions you deem necessary for stamping,
-    # initializing, and processing results.
+    # initializing, and processing results
+    def stamp_lin(self): #not sure if I need this
+        pass
+
+    def stamp_sparse_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y): #not sure if I need this
+        #Real slack stamp
+        Y_row[idx_y] = self.node_P_Slack
+        Y_col[idx_y] = self.node_P_Slack
+        Y_val[idx_y] = 1
+        J_vec[idx_y] = abs(self.Vset)*np.cos(self.ang)
+        idx_y +=1
+        #Imaginary slack stamp
+        Y_row[idx_y] = self.node_Q_Slack
+        Y_col[idx_y] = self.node_Q_Slack
+        Y_val[idx_y] = 1
+        J_vec[idx_y] = abs(self.Vset)*np.sin(self.ang)
+        idx_y +=1
+        
+    def initialize(self): #not sure if I need this
+        pass

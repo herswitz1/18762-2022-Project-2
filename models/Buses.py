@@ -7,9 +7,9 @@ class Buses:
     _idsActiveBuses = count(1)
     _idsAllBuses = count(1)
 
-    _node_index = count(0)
-    bus_key_ = {}
-    all_bus_key_ = {}
+    _node_index = count(0)#THIS ESSENTIALLY COUNTS THE NUMBER OF NODES(LIKE OUR NODES IN PROJECT1)
+    bus_key_ = {}#THIS MAKES A DICTIONARY FOR EACH BUS(where do we call this?)
+    all_bus_key_ = {}#THIS IS THE OVERALL LIST OF DICTIONARIES FOR THE BUSES
 
     def __init__(self,
                  Bus,
@@ -29,14 +29,17 @@ class Buses:
 
         self.Bus = Bus
         self.Type = Type
+        self.Vm_init = Vm_init
+        self.Va_init = Va_init
+        self.Area = Area
 
-        # initialize all nodes
-        self.node_Vr = None  # real voltage node at a bus
-        self.node_Vi = None  # imaginary voltage node at a bus
-        self.node_Q = None  # reactive power or voltage contstraint node at a bus
+        # initialize all nodes(indexes looking below we see that these nodes get assigned indexes)
+        self.node_Vr = None  
+        self.node_Vi = None  
+        self.node_Q = None  
 
         # initialize the bus key
-        self.idAllBuses = self._idsAllBuses.__next__()
+        self.idAllBuses = self._idsAllBuses.__next__()###NOT SURE HOW THIS FUNCTIONS
         Buses.all_bus_key_[self.Bus] = self.idAllBuses - 1
 
     def __str__(self):

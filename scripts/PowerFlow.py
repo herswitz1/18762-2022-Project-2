@@ -26,18 +26,37 @@ class PowerFlow:
         self.enable_limiting = enable_limiting
 
     def solve(self):
+        #essitially takes in the Y and J matrix in order to solve 
+        #V_k = np.linalg.solve(Y,J)
+
         pass
 
     def apply_limiting(self):
+        #not sure what happens here possible huristics
         pass
 
     def check_error(self):
+        #CHECKES THE NR TO SEE IF IT CONVERGES IF SO THIS IS OUR V VECTOR
         pass
 
     def stamp_linear(self):
+        #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
+        #EX:
+        #for gen in generators:
+        #generators.stamp_lin(Y,j)
+        #for branch in branches:
+        #branches.stamp_lin(Y,J)
+        #etc
         pass
 
     def stamp_nonlinear(self):
+        #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
+        #EX:
+        #for gen in generators:
+        #generators.stamp_non_lin(Y,j)
+        #for branch in branches:
+        #branches.stamp_non_lin(Y,J)
+        #etc
         pass
 
     def run_powerflow(self,

@@ -36,8 +36,32 @@ class Shunts:
             Nsteps (list): the number of steps by which the switched shunt should adjust itself
             Bstep (list): the admittance increase for each step in Nstep as MVar at unity voltage
         """
-        self.id = self._ids.__next__()
+        self.Bus = Bus
+        self.G_MW = G_MW
+        self.B_MVAR = B_MVAR
+        self.shunt_type = shunt_type
+        self.Vhi = Vhi
+        self.Vlo = Vlo
+        self.Bmax = Bmax
+        self.Bmin = Bmin
+        self.Binit = Binit
+        self.controlBus = controlBus
+        self.flag_control_shunt_bus = flag_control_shunt_bus
+        self.Nsteps = Nsteps
+        self.Bstep = Bstep
+        self.id = self._ids.__next__()#NOT SURE IF THIS SHOULD GO AT BEGINNING OR END
 
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
+    def assign_nodes(self): #not sure if I need this
+        pass
+
+    def stamp_lin(self): #not sure if I need this
+        pass
+
+    def stamp_non_lin(self): #not sure if I need this
+        pass
+        
+    def initialize(self): #not sure if I need this
+        pass

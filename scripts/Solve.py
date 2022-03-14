@@ -3,6 +3,7 @@ from scripts.PowerFlow import PowerFlow
 from scripts.process_results import process_results
 from scripts.initialize import initialize
 from models.Buses import Buses
+import numpy as np
 
 
 def solve(TESTCASE, SETTINGS):
@@ -45,10 +46,28 @@ def solve(TESTCASE, SETTINGS):
     for ele in slack:
         ele.assign_nodes()
 
+    #SHOULD i DO ASSIGN NODES FOR ALL THE OTHER OBJECTS
+    ##NOT SURE IF THIS IS WHERE i SHOULD BE CALLING THESE
+    for ele in generator:
+        ele.assign_nodes()
+    for ele in transformer:
+        ele.assign_nodes()
+    for ele in branch:
+        ele.assign_nodes()
+    for ele in shunt:
+        ele.assign_nodes()
+    for ele in load:
+        ele.assign_nodes()
+
     # # # Initialize Solution Vector - V and Q values # # #
 
     # determine the size of the Y matrix by looking at the total number of nodes in the system
     size_Y = Buses._node_index.__next__()
+
+    #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES(POSSIBLY CALL IN INITIALIZE)
+    row = np.zeros(size_Y)
+    col = np.zeros(size_Y)
+    val = np.zeros(size_Y)
 
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
     v_init = None  # create a solution vector filled with zeros of size_Y
