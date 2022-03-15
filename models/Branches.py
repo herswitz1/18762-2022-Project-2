@@ -152,8 +152,5 @@ class Branches:
         idx_y +=1
 
 
-    def stamp_non_lin(self): #not sure if I need this
-        pass
-        
     def initialize(self): #not sure if I need this
         pass

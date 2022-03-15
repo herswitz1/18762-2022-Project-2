@@ -2,7 +2,7 @@ from __future__ import division
 from itertools import count
 from scripts.global_vars import global_vars
 import numpy as np
-import modules.Buses as Buses
+import models.Buses as Buses
 
 ##PV BUS
 ##SOMETHING FEELS OFF ABOUT HOW I AM STAMPING MY J VECTOR

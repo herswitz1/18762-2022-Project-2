@@ -69,6 +69,8 @@ def solve(TESTCASE, SETTINGS):
     col = np.zeros(size_Y)
     val = np.zeros(size_Y)
 
+    ###FEEL LIKE I NEED SOMETHING LIKE Y_ROW_LIN = COPY(ROW), AND THEN SAME FOR COL AND VAL AS WELL AS NONLINEAR
+
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
     v_init = None  # create a solution vector filled with zeros of size_Y
     v_init = initialize()
