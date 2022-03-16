@@ -60,18 +60,19 @@ class Branches:
     def sparse_stamp_lin(self, Y_row, Y_col,Y_val, J_vec, idx_y, prev_v): #not sure if I need this
         G = self.r/(np.sqaure(self.r)+np.square(self.x))
         B = self.x/(np.sqaure(self.r)+np.square(self.x))
+        SH = self.b/2
         
         #Real
         #I1r
         #Y(a,a)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = G
+        Y_val[idx_y] = G #real resistance from node (noteice that there may be some sign error)
         idx_y +=1
         #Y(a,b)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = -G
+        Y_val[idx_y] = -G#real resistance to node
         idx_y +=1
         #Y(a,c)
         Y_row[idx_y] = self.from_Bnode_r
@@ -82,6 +83,11 @@ class Branches:
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = -B
+        idx_y +=1
+        #Y(a,a) shunt real at from node
+        Y_row[idx_y] = self.from_Bnode_r
+        Y_col[idx_y] = self.from_Bnode_i
+        Y_val[idx_y] = -SH
         idx_y +=1
 
         #I2r
@@ -104,6 +110,11 @@ class Branches:
         Y_row[idx_y] = self.to_Bnode_r
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = B
+        idx_y +=1
+        #Y(b,b) real shunt at to node
+        Y_row[idx_y] = self.to_Bnode_r
+        Y_col[idx_y] = self.to_Bnode_r
+        Y_val[idx_y] = -SH
         idx_y +=1
 
         #Imaginary
@@ -128,6 +139,11 @@ class Branches:
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = -G
         idx_y +=1
+        #Y(c,c)shunt for imaginary from node
+        Y_row[idx_y] = self.from_Bnode_i
+        Y_col[idx_y] = self.from_Bnode_i
+        Y_val[idx_y] = -SH
+        idx_y +=1
 
         #I2i
         #Y(d,a)
@@ -150,7 +166,16 @@ class Branches:
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = G
         idx_y +=1
+        #Y(d,d) shunt for imagainary to node
+        Y_row[idx_y] = self.to_Bnode_i
+        Y_col[idx_y] = self.to_Bnode_i
+        Y_val[idx_y] = -SH
+        idx_y +=1
 
 
-    def initialize(self): #not sure if I need this
+    def initialize(self,Vinit): #not sure if I need this
+        Vinit[self.from_Bnode_r]=0
+        Vinit[self.from_Bnode_i] = 0
+        Vinit[self.to_Bnode_r]=0
+        Vinit[self.to_Bnode_i]=0
         pass

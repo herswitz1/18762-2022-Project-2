@@ -72,8 +72,8 @@ def solve(TESTCASE, SETTINGS):
     ###FEEL LIKE I NEED SOMETHING LIKE Y_ROW_LIN = COPY(ROW), AND THEN SAME FOR COL AND VAL AS WELL AS NONLINEAR
 
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
-    v_init = None  # create a solution vector filled with zeros of size_Y
-    v_init = initialize()
+    v_init = np.zeros(size_Y)  # create a solution vector filled with zeros of size_Y
+    v_init = initialize(v_init,slack, generator,transformer,branch, shunt,load)
 
     # # # Run Power Flow # # #
     powerflow = PowerFlow(case_name, tol, max_iters, enable_limiting)

@@ -87,7 +87,7 @@ class Generators:
         Y_row[idx_y] = self.node_Vrg
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIrg_dVrg
-        #J(i)(probably only need Irg)
+        #J(i)(probably only need Irg)(maybe instead i need to do node_Vrg)
         J_vec[idx_y] = -(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current(may not need all of these terms)
         idx_y += 1
         ##Y(i,j)
@@ -136,11 +136,11 @@ class Generators:
         Y_col[idx_y] = self.node_Vig
         Y_val[idx_y] = 2*prev_v[self.node_Vig]
         idx_y +=1
-
-
-    def stamp_non_lin(self): #not sure if I need this
-        pass
         
-    def initialize(self): #not sure if I need this
+    def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
+        Vinit[self.node_Vrg] = 1#These need to be something else
+        Vinit[self.node_Vig] = 1
+        Vinit[self.node_Qg] = 1
+        
         pass
         

@@ -26,8 +26,8 @@ class Slack:
         self.Pinit = Pinit
         self.Qinit = Qinit
         # initialize nodes
-        self.node_Vr_Slack = None #SINCE NO VMAG AND ANGLE CAN CALCULATE REAL AND IMAGNIARY SLACK VOLTAGE
-        self.node_Vi_Slack = None #These should probably be P and Q two be more representative
+        self.node_P_Slack = None #SINCE NO VMAG AND ANGLE CAN CALCULATE REAL AND IMAGNIARY SLACK VOLTAGE
+        self.node_Q_Slack = None #These should probably be P and Q two be more representative
 
     def assign_nodes(self):
         """Assign the additional slack bus nodes for a slack bus.
@@ -43,19 +43,22 @@ class Slack:
     def stamp_lin(self): #not sure if I need this
         pass
 
-    def stamp_sparse_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y): #not sure if I need this
+    def stamp_sparse_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y, prev_v): #not sure if I need this
         #Real slack stamp
         Y_row[idx_y] = self.node_P_Slack
         Y_col[idx_y] = self.node_P_Slack
-        Y_val[idx_y] = 1
-        J_vec[idx_y] = abs(self.Vset)*np.cos(self.ang)
+        Y_val[idx_y] = abs(self.Vset)*np.cos(self.ang)
+        J_vec[idx_y] = prev_v[self.node_P_Slack]
         idx_y +=1
         #Imaginary slack stamp
         Y_row[idx_y] = self.node_Q_Slack
         Y_col[idx_y] = self.node_Q_Slack
-        Y_val[idx_y] = 1
-        J_vec[idx_y] = abs(self.Vset)*np.sin(self.ang)
+        Y_val[idx_y] = abs(self.Vset)*np.sin(self.ang)
+        J_vec[idx_y] = prev_v[self.node_Q_Slack]
         idx_y +=1
         
-    def initialize(self): #not sure if I need this
+    def initialize(self,Vinit): #not sure if I need this
+        ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii
+        Vinit[self.node_P_Slack] = self.Pinit/(abs(self.Vset)*np.cos(self.ang))
+        Vinit[self.node_Q_Slack] = self.Qinit/(abs(self.Vset)*np.sin(self.ang))
         pass

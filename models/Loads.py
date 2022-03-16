@@ -99,5 +99,7 @@ class Loads:
     def stamp_non_lin(self): #not sure if I need this
         pass
         
-    def initialize(self): #not sure if I need this
+    def initialize(self, Vinit): #For liniear components stamp 0(not sure what to give them iniitlaly)
+        Vinit[self.node_Vrl] = 1#These are wrong
+        Vinit[self.node_Vil] = 1
         pass

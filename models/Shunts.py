@@ -50,18 +50,41 @@ class Shunts:
         self.Nsteps = Nsteps
         self.Bstep = Bstep
         self.id = self._ids.__next__()#NOT SURE IF THIS SHOULD GO AT BEGINNING OR END
-
+        self.from_sh_r = None
+        self.from_sh_i = None
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
-    def assign_nodes(self): #not sure if I need this
+    def assign_nodes(self): #What I currently have is wrong
+        self.from_sh_r = Buses.all_bus_key_[self.bus][self.node_Vr]#Vnr (a)
+        self.from_sh_i = Buses.all_bus_key_[self.bus][self.node_Vi]#Vni (c)
         pass
 
-    def stamp_lin(self): #not sure if I need this
+    def sparse_stamp_lin(self, Y_row, Y_col,Y_val, J_vec, idx_y, prev_v): #not sure if I need this
+        #Real
+        Y_row[idx_y]= self.from_sh_r
+        Y_row[idx_y]= self.from_sh_r
+        Y_val[idx_y] = self.G_MW
+        idx_y += 1
+        Y_row[idx_y]= self.from_sh_r
+        Y_row[idx_y]= self.from_sh_i
+        Y_val[idx_y] = -self.B_MVAR
+        idx_y += 1
+        #imagniary
+        Y_row[idx_y]= self.from_sh_i
+        Y_row[idx_y]= self.from_sh_r
+        Y_val[idx_y] = self.B_MVAR
+        idx_y += 1
+        Y_row[idx_y]= self.from_sh_i
+        Y_row[idx_y]= self.from_sh_i
+        Y_val[idx_y] = -self.G_MW
+        idx_y += 1
         pass
 
     def stamp_non_lin(self): #not sure if I need this
         pass
         
-    def initialize(self): #not sure if I need this
+    def initialize(self,Vinit): 
+        Vinit[self.from_sh_r] = 0
+        Vinit[self.from_sh_i] = 0
         pass
