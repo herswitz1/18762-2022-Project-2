@@ -48,18 +48,18 @@ class Branches:
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
         
-    def assign_nodes(self): #we shoud have 4 node indeces, 2 for real and 2 for imaginary
+    def assign_nodes(self,bus): #we shoud have 4 node indeces, 2 for real and 2 for imaginary
         #know these are not correct
-        self.from_Bnode_r = Buses.all_bus_key_[self.from_bus][self.node_Vr]#Vnr (a)
-        self.from_Bnode_i = Buses.all_bus_key_[self.from_bus][self.node_Vi]#Vni (c)
-        self.to_Bnode_r = Buses.all_bus_key_[self.to_bus][self.node_Vr]#Vmr (b)
-        self.to_Bnode_i = Buses.all_bus_key_[self.to_bus][self.node_Vi]#Vmi (d)
+        self.from_Bnode_r = bus[Buses.bus_key_[self.from_bus]].node_Vr#Vnr (a)
+        self.from_Bnode_i = bus[Buses.bus_key_[self.from_bus]].node_Vi#Vni (c)
+        self.to_Bnode_r = bus[Buses.bus_key_[self.to_bus]].node_Vr#Vmr (b)
+        self.to_Bnode_i = bus[Buses.bus_key_[self.to_bus]].node_Vi#Vmi (d)
 
         
 
-    def sparse_stamp_lin(self, Y_row, Y_col,Y_val, J_vec, idx_y, prev_v): #not sure if I need this
-        G = self.r/(np.sqaure(self.r)+np.square(self.x))
-        B = self.x/(np.sqaure(self.r)+np.square(self.x))
+    def sparse_stamp_lin(self, Y_row, Y_col,Y_val, idx_y): #not sure if I need this
+        G = self.r/(np.square(self.r)+np.square(self.x))
+        B = self.x/(np.square(self.r)+np.square(self.x))
         SH = self.b/2
         
         #Real

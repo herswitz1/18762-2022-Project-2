@@ -2,7 +2,7 @@ from __future__ import division
 from itertools import count
 from scripts.global_vars import global_vars
 import numpy as np
-import models.Buses as Buses
+from models.Buses import Buses
 
 ##PV BUS
 ##SOMETHING FEELS OFF ABOUT HOW I AM STAMPING MY J VECTOR
@@ -61,10 +61,10 @@ class Generators:
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
-    def assign_nodes(self): #struggling to figure out what to do here
-        self.node_Vrg = Buses.all_bus_key_[self.Bus][self.node_Vr] #trying to go inot buss find the correspdonding bus and then assiging nodes
-        self.node_Vig = Buses.all_bus_key_[self.Bus][self.node_Vi]
-        self.node_Qg = Buses.all_bus_key_[self.Bus][self.node_Q]   
+    def assign_nodes(self,bus): #struggling to figure out what to do here
+        self.node_Vrg = bus[Buses.bus_key_[self.Bus]].node_Vr #trying to go inot buss find the correspdonding bus and then assiging nodes
+        self.node_Vig = bus[Buses.bus_key_[self.Bus]].node_Vi
+        self.node_Qg = bus[Buses.bus_key_[self.Bus]].node_Q   
             
 
     def sparse_stamp_non_lin(self,Y_row,Y_col, Y_val,J_vec, idx_y, prev_v): 
@@ -138,9 +138,9 @@ class Generators:
         idx_y +=1
         
     def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
-        Vinit[self.node_Vrg] = 1#These need to be something else
-        Vinit[self.node_Vig] = 1
-        Vinit[self.node_Qg] = 1
+        #Vinit[self.node_Vrg] = 1#These need to be something else
+        #Vinit[self.node_Vig] = 1
+        Vinit[self.node_Qg] = self.Qinit
         
         pass
         

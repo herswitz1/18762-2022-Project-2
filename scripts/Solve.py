@@ -39,7 +39,11 @@ def solve(TESTCASE, SETTINGS):
 
     # # # Assign System Nodes Bus by Bus # # #
     # We can use these nodes to have predetermined node number for every node in our Y matrix and J vector.
+    bus_counter = 0
+
     for ele in bus:
+        Buses.bus_key_[ele.Bus] = bus_counter
+        bus_counter +=1
         ele.assign_nodes()
 
     # Assign any slack nodes
@@ -49,31 +53,27 @@ def solve(TESTCASE, SETTINGS):
     #SHOULD i DO ASSIGN NODES FOR ALL THE OTHER OBJECTS
     ##NOT SURE IF THIS IS WHERE i SHOULD BE CALLING THESE
     for ele in generator:
-        ele.assign_nodes()
+        ele.assign_nodes(bus)
     for ele in transformer:
-        ele.assign_nodes()
+        ele.assign_nodes(bus)
     for ele in branch:
-        ele.assign_nodes()
+        ele.assign_nodes(bus)
     for ele in shunt:
-        ele.assign_nodes()
+        ele.assign_nodes(bus)
     for ele in load:
-        ele.assign_nodes()
+        ele.assign_nodes(bus)
 
     # # # Initialize Solution Vector - V and Q values # # #
 
     # determine the size of the Y matrix by looking at the total number of nodes in the system
     size_Y = Buses._node_index.__next__()
 
-    #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES(POSSIBLY CALL IN INITIALIZE)
-    row = np.zeros(size_Y)
-    col = np.zeros(size_Y)
-    val = np.zeros(size_Y)
-
+    
     ###FEEL LIKE I NEED SOMETHING LIKE Y_ROW_LIN = COPY(ROW), AND THEN SAME FOR COL AND VAL AS WELL AS NONLINEAR
 
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
     v_init = np.zeros(size_Y)  # create a solution vector filled with zeros of size_Y
-    v_init = initialize(v_init,slack, generator,transformer,branch, shunt,load)
+    v_init = initialize(v_init,slack,bus)
 
     # # # Run Power Flow # # #
     powerflow = PowerFlow(case_name, tol, max_iters, enable_limiting)
@@ -81,10 +81,10 @@ def solve(TESTCASE, SETTINGS):
     # TODO: PART 1, STEP 2 - Complete the PowerFlow class and build your run_powerflow function to solve Equivalent
     #  Circuit Formulation powerflow. The function will return a final solution vector v. Remove run_pf and the if
     #  condition once you've finished building your solver.
-    run_pf = False
+    run_pf = True
     if run_pf:
-        v = powerflow.run_powerflow(v_init, bus, slack, generator, transformer, branch, shunt, load)
-
+        v = powerflow.run_powerflow(v_init, bus, slack, generator, transformer, branch, shunt, load, size_Y)
+        print(v)
     # # # Process Results # # #
     # TODO: PART 1, STEP 3 - Write a process_results function to compute the relevant results (voltages, powers,
     #  and anything else of interest) and find the voltage profile (maximum and minimum voltages in the case).

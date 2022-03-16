@@ -1,6 +1,6 @@
 from __future__ import division
 from itertools import count
-
+from models.Buses import Buses
 
 class Shunts:
     _ids = count(0)
@@ -55,28 +55,28 @@ class Shunts:
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
-    def assign_nodes(self): #What I currently have is wrong
-        self.from_sh_r = Buses.all_bus_key_[self.bus][self.node_Vr]#Vnr (a)
-        self.from_sh_i = Buses.all_bus_key_[self.bus][self.node_Vi]#Vni (c)
+    def assign_nodes(self,bus): #What I currently have is wrong
+        self.from_sh_r = bus[Buses.bus_key_[self.bus]].node_Vr#Vnr (a)
+        self.from_sh_i = bus[Buses.bus_key_[self.bus]].node_Vi#Vni (c)
         pass
 
-    def sparse_stamp_lin(self, Y_row, Y_col,Y_val, J_vec, idx_y, prev_v): #not sure if I need this
+    def sparse_stamp_lin(self, Y_row, Y_col,Y_val, idx_y): #not sure if I need this
         #Real
         Y_row[idx_y]= self.from_sh_r
-        Y_row[idx_y]= self.from_sh_r
+        Y_col[idx_y]= self.from_sh_r
         Y_val[idx_y] = self.G_MW
         idx_y += 1
         Y_row[idx_y]= self.from_sh_r
-        Y_row[idx_y]= self.from_sh_i
+        Y_col[idx_y]= self.from_sh_i
         Y_val[idx_y] = -self.B_MVAR
         idx_y += 1
         #imagniary
         Y_row[idx_y]= self.from_sh_i
-        Y_row[idx_y]= self.from_sh_r
+        Y_col[idx_y]= self.from_sh_r
         Y_val[idx_y] = self.B_MVAR
         idx_y += 1
         Y_row[idx_y]= self.from_sh_i
-        Y_row[idx_y]= self.from_sh_i
+        Y_col[idx_y]= self.from_sh_i
         Y_val[idx_y] = -self.G_MW
         idx_y += 1
         pass

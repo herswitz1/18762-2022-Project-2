@@ -64,3 +64,9 @@ class Buses:
             self.node_Vr = self._node_index.__next__()
             self.node_Vi = self._node_index.__next__()
             self.node_Q = self._node_index.__next__()
+    
+    def initialize(self, Vinit):
+        Vinit[self.node_Vr] = 1
+        Vinit[self.node_Vi] = 1
+        Vinit[self.node_Q] =1
+        pass

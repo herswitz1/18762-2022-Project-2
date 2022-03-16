@@ -47,9 +47,9 @@ class Loads:
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
-    def assign_nodes(self): #struggling to figure out how to properly assign the nodes
-        self.node_Vrl = Buses.all_bus_key_[self.Bus][self.node_Vr]
-        self.node_Vil = None
+    def assign_nodes(self,bus): #struggling to figure out how to properly assign the nodes
+        self.node_Vrl = bus[Buses.bus_key_[self.Bus]].node_Vr
+        self.node_Vil = bus[Buses.bus_key_[self.Bus]].node_Vi
         pass
 
     def stamp_sparse_non_lin(self,Y_row, Y_col,Y_val,J_vec, idx_y,prev_v): 

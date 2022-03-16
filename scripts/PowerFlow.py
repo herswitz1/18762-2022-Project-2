@@ -48,7 +48,7 @@ class PowerFlow:
         #CHECKES THE NR TO SEE IF IT CONVERGES IF SO THIS IS OUR V VECTOR
         pass
 
-    def stamp_linear(self,Y_row_lin,Y_col_lin,Y_val_lin,branch,shunt,transformer):
+    def stamp_linear(self,Y_row_lin,Y_col_lin,Y_val_lin,branch,shunt,transformer,prev_v):
         #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
         #EX:
         #for gen in generators:
@@ -56,14 +56,15 @@ class PowerFlow:
         #for branch in branches:
         #branches.stamp_lin(Y,J)
         #etc
+        idx_y = 0
         for branches in branch:
-            branches.sparse_stamp_lin(Y_row_lin,Y_col_lin,Y_val_lin,J_vec, idx_y, prev_v)#these are the other imputs that are needed in branches
+            branches.sparse_stamp_lin(Y_row_lin,Y_col_lin,Y_val_lin, idx_y)#these are the other imputs that are needed in branches
 
         for shunts in shunt:
-            shunts.sparse_stamp_lin()#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
+            shunts.sparse_stamp_lin(Y_row_lin, Y_col_lin,Y_val_lin, idx_y)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
         
         for transformers in transformer:
-            transformer.sparse_stamp_lin()
+            transformers.sparse_stamp_lin()
 
         ###not sure what this needs to return
 
@@ -97,7 +98,8 @@ class PowerFlow:
                       transformer,
                       branch,
                       shunt,
-                      load):
+                      load,
+                      size_Y):
         """Runs a positive sequence power flow using the Equivalent Circuit Formulation.
 
         Args:
@@ -114,7 +116,18 @@ class PowerFlow:
             v(np.array): The final solution vector.
 
         """
-
+        #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES(POSSIBLY CALL IN INITIALIZE)
+        row = np.zeros(size_Y)
+        col = np.zeros(size_Y)
+        val = np.zeros(size_Y)
+        Y_row_lin = np.copy(row)
+        Y_col_lin = np.copy(col)
+        Y_val_lin = np.copy(val)
+        Y_row_non_lin = np.copy(row)
+        Y_col_non_lin = np.copy(col)
+        Y_val_non_lin = np.copy(val)
+        J_vec_lin = np.copy(row)
+        J_vec_non_lin = np.copy(row)
         # # # Copy v_init into the Solution Vectors used during NR, v, and the final solution vector v_sol # # #
         v = np.copy(v_init)
         v_sol = np.copy(v)
@@ -124,7 +137,7 @@ class PowerFlow:
         #  This function should call the stamp_linear function of each linear element and return an updated Y matrix.
         #  You need to decide the input arguments and return values.
         ####I INTITIALIZE ROW,COL, AND VAL IN SOLVE SO I WILL PROBABLY NEED TO ADD MAKE LINEAR AND NON LINEAR COPIES AND GIVE THEM AS INPUTS
-        self.stamp_linear(Y_row_lin,Y_col_lin,Y_val_lin,branch,shunt) ##FEEL LIKE THIS NEEDS TO BE FED SOME OTHER INFO, LIKE IDX_Y
+        self.stamp_linear(Y_row_lin,Y_col_lin,Y_val_lin,branch,shunt, transformer,v_init) ##FEEL LIKE THIS NEEDS TO BE FED SOME OTHER INFO, LIKE IDX_Y
 
         # # # Initialize While Loop (NR) Variables # # #
         # TODO: PART 1, STEP 2.2 - Initialize the NR variables
@@ -142,13 +155,13 @@ class PowerFlow:
             # TODO: PART 1, STEP 2.4 - Complete the stamp_nonlinear function which stamps all nonlinear power grid
             #  elements. This function should call the stamp_nonlinear function of each nonlinear element and return
             #  an updated Y matrix. You need to decide the input arguments and return values.
-            self.stamp_nonlinear(Y_row_nonlin,Y_col_nonlin,Y_val_nonlin,generator,load,slack)
+            self.stamp_nonlinear(Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,generator,load,slack)
 
             # # # Solve The System # # #
             # TODO: PART 1, STEP 2.5 - Complete the solve function which solves system of equations Yv = J. The
             #  function should return a new v_sol.
             #  You need to decide the input arguments and return values.
-            self.solve(Y_row_lin, Y_row_nonlin, Y_col_lin, Y_col_nonlin, Y_val_lin, Y_val_nonlin, J_vec_lin, J_vec_non_lin)
+            self.solve(Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin)
 
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 1, STEP 2.6 - Finish the check_error function which calculates the maximum error, err_max
