@@ -68,7 +68,7 @@ class PowerFlow:
 
         ###not sure what this needs to return
 
-    def stamp_nonlinear(self,Y_row_nonlin,Y_col_nonlin,Y_val_nonlin,generator,load,slack):
+    def stamp_nonlinear(self,Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, generator,load,slack, prev_v):
         #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
         #EX:
         #for gen in generators:
@@ -76,9 +76,10 @@ class PowerFlow:
         #for branch in branches:
         #branches.stamp_non_lin(Y,J)
         #etc
+        idx_y = 0 #not sure about this
 
         for generators in generator:
-            generators.sparse_stamp_non_lin()#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
+            generators.sparse_stamp_non_lin(Y_row_non_lin,Y_col_non_lin, Y_val_non_lin,J_vec_non_lin, idx_y, prev_v)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
         
         for loads in load:
             loads.sparse_stamp_non_lin()
@@ -117,9 +118,9 @@ class PowerFlow:
 
         """
         #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES(POSSIBLY CALL IN INITIALIZE)
-        row = np.zeros(size_Y)
-        col = np.zeros(size_Y)
-        val = np.zeros(size_Y)
+        row = np.zeros(size_Y*10)
+        col = np.zeros(size_Y*10)
+        val = np.zeros(size_Y*10)
         Y_row_lin = np.copy(row)
         Y_col_lin = np.copy(col)
         Y_val_lin = np.copy(val)
@@ -141,9 +142,9 @@ class PowerFlow:
 
         # # # Initialize While Loop (NR) Variables # # #
         # TODO: PART 1, STEP 2.2 - Initialize the NR variables
-        err_max = None  # maximum error at the current NR iteration
-        tol = None  # chosen NR tolerance
-        NR_count = None  # current NR iteration
+        err_max = 1#really bad intial guess  # maximum error at the current NR iteration
+        tol = self.tol#settings["Tolerance"]#None  # chosen NR tolerance
+        NR_count = None  # current NR iteration(HOW SHOULD WE USE THIS?)
 
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
@@ -155,7 +156,7 @@ class PowerFlow:
             # TODO: PART 1, STEP 2.4 - Complete the stamp_nonlinear function which stamps all nonlinear power grid
             #  elements. This function should call the stamp_nonlinear function of each nonlinear element and return
             #  an updated Y matrix. You need to decide the input arguments and return values.
-            self.stamp_nonlinear(Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,generator,load,slack)
+            self.stamp_nonlinear(Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, generator,load,slack,v_sol)#feel like something is off
 
             # # # Solve The System # # #
             # TODO: PART 1, STEP 2.5 - Complete the solve function which solves system of equations Yv = J. The
