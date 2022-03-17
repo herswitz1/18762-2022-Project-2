@@ -65,8 +65,12 @@ class Buses:
             self.node_Vi = self._node_index.__next__()
             self.node_Q = self._node_index.__next__()
     
-    def initialize(self, Vinit):
-        Vinit[self.node_Vr] = 1
-        Vinit[self.node_Vi] = 1
-        Vinit[self.node_Q] =1
-        pass
+    def initialize(self, v_init):
+        if self.Type == 1 or self.Type == 3:
+            v_init[self.node_Vr] = self.Vm_init*np.cos(self.Va_init)
+            v_init[self.node_Vi] = self.Vm_init*np.sin(self.Va_init)
+        elif self.Type == 2:
+            v_init[self.node_Vr] = self.Vm_init*np.cos(self.Va_init)
+            v_init[self.node_Vi] = self.Vm_init*np.sin(self.Va_init)
+            v_init[self.node_Q] =1 #need to go into generator for the corresponding bus and pull out Q
+        #return Vinit

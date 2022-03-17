@@ -174,8 +174,8 @@ class Branches:
 
 
     def initialize(self,Vinit): #not sure if I need this
-        Vinit[self.from_Bnode_r]=0
-        Vinit[self.from_Bnode_i] = 0
-        Vinit[self.to_Bnode_r]=0
-        Vinit[self.to_Bnode_i]=0
+        Vinit[self.from_Bnode_r]=0.00001
+        Vinit[self.from_Bnode_i] = 0.00001
+        Vinit[self.to_Bnode_r]=0.00001
+        Vinit[self.to_Bnode_i]=0.00001
         pass

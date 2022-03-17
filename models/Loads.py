@@ -52,7 +52,7 @@ class Loads:
         self.node_Vil = bus[Buses.bus_key_[self.Bus]].node_Vi
         pass
 
-    def stamp_sparse_non_lin(self,Y_row, Y_col,Y_val,J_vec, idx_y,prev_v): 
+    def sparse_stamp_non_lin(self,Y_row, Y_col,Y_val,J_vec, idx_y,prev_v): 
         Vrl_il = ((np.square(prev_v[self.node_Vrl]))+(np.square(prev_v[self.node_Vil]))) #this is the sum of the previous real voltage square and imaginary voltage squared
         Irl = ((self.P*prev_v[self.node_Vrl]) + (self.Q*prev_v[self.node_Vil]))/(Vrl_il) ##current value of real load current
         Iil = ((self.P*prev_v[self.node_Vil]) - (self.Q*prev_v[self.node_Vrl]))/(Vrl_il) ##current value of imaginary load current

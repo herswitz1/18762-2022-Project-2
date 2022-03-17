@@ -33,7 +33,11 @@ class PowerFlow:
         Y_col = Y_col_lin + Y_col_nonlin
         Y_val = Y_val_lin + Y_val_nonlin
         J_vec = J_vec_lin + J_vec_non_lin
-        Y_mtx = csr_matrix(Y_val, (Y_row, Y_col), shape=(len(Y_row),len(Y_col))) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
+        Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(len(Y_row),len(Y_col))).toarray() #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
+        print(type(Y_mtx))
+        print(type(J_vec))
+        #C = Y_mtx.todense() 
+        #print(check)
         V_k = spsolve(Y_mtx, J_vec)
         ##DO I NEED TO KEEP TRACK TO THE PREVIOUS V VECTOR IN ORDER TO CALCULAT THE ERROR
 
@@ -44,9 +48,15 @@ class PowerFlow:
         #not sure what happens here possible huristics
         pass
 
-    def check_error(self):
+    def check_error(self,v_current,v_prev,err_max):
         #CHECKES THE NR TO SEE IF IT CONVERGES IF SO THIS IS OUR V VECTOR
-        pass
+        hist_nr =np.amax(np.abs(v_prev))
+        err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
+
+        v_prev = v_current
+
+        return err_max
+        
 
     def stamp_linear(self,Y_row_lin,Y_col_lin,Y_val_lin,branch,shunt,transformer,prev_v):
         #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
@@ -82,10 +92,10 @@ class PowerFlow:
             generators.sparse_stamp_non_lin(Y_row_non_lin,Y_col_non_lin, Y_val_non_lin,J_vec_non_lin, idx_y, prev_v)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
         
         for loads in load:
-            loads.sparse_stamp_non_lin()
+            loads.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, idx_y,prev_v)
 
         for slack in slack: #NOT SURE IF SOMETHING IS WRONG WITH THIS CONFIGURATION
-            slack.sparse_stamp_non_lin()
+            slack.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin, Y_val_non_lin, J_vec_non_lin, idx_y, prev_v)
 
         #NOT SURE WHAT TO RETURN
         
@@ -144,11 +154,11 @@ class PowerFlow:
         # TODO: PART 1, STEP 2.2 - Initialize the NR variables
         err_max = 1#really bad intial guess  # maximum error at the current NR iteration
         tol = self.tol#settings["Tolerance"]#None  # chosen NR tolerance
-        NR_count = None  # current NR iteration(HOW SHOULD WE USE THIS?)
+        NR_count = 0  # current NR iteration(HOW SHOULD WE USE THIS?)
 
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
-        while err_max > tol:
+        while err_max > tol and NR_count <20:
             ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
 
 
@@ -167,7 +177,8 @@ class PowerFlow:
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 1, STEP 2.6 - Finish the check_error function which calculates the maximum error, err_max
             #  You need to decide the input arguments and return values.
-            self.check_error()
+            self.check_error(v, v_sol, err_max)
+            print(err_max)
 
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 2, STEP 1 - Develop the apply_limiting function which implements voltage and reactive power
@@ -177,5 +188,9 @@ class PowerFlow:
                 self.apply_limiting()
             else:
                 pass
-
+            NR_count +=1
+            Y_row_non_lin = np.zeros(size_Y*50)
+            Y_col_non_lin = np.zeros(size_Y*50)
+            Y_val_non_lin = np.zeros(size_Y*50)
+            J_vec_non_lin = np.zeros(size_Y*50)
         return v

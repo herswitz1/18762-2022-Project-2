@@ -67,13 +67,14 @@ def solve(TESTCASE, SETTINGS):
 
     # determine the size of the Y matrix by looking at the total number of nodes in the system
     size_Y = Buses._node_index.__next__()
-
+    #size_Y = size_Y-1
     
     ###FEEL LIKE I NEED SOMETHING LIKE Y_ROW_LIN = COPY(ROW), AND THEN SAME FOR COL AND VAL AS WELL AS NONLINEAR
 
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
-    v_init = np.zeros(size_Y)  # create a solution vector filled with zeros of size_Y
-    v_init = initialize(v_init,slack,bus)
+    v_init = np.zeros(size_Y*10)  # create a solution vector filled with zeros of size_Y
+    print(v_init)
+    initialize(v_init,slack,bus,generator, load)
 
     # # # Run Power Flow # # #
     powerflow = PowerFlow(case_name, tol, max_iters, enable_limiting)

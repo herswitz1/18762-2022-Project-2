@@ -43,7 +43,7 @@ class Slack:
     def stamp_lin(self): #not sure if I need this
         pass
 
-    def stamp_sparse_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y, prev_v): #not sure if I need this
+    def sparse_stamp_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y, prev_v): #not sure if I need this
         #Real slack stamp
         Y_row[idx_y] = self.node_P_Slack
         Y_col[idx_y] = self.node_P_Slack
@@ -59,6 +59,6 @@ class Slack:
         
     def initialize(self,Vinit): #not sure if I need this
         ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii
-        Vinit[self.node_P_Slack] = self.Pinit/(abs(self.Vset)*np.cos(self.ang))
-        Vinit[self.node_Q_Slack] = self.Qinit/(abs(self.Vset)*np.sin(self.ang))
-        pass
+        Vinit[self.node_P_Slack] = self.Pinit#/(abs(self.Vset)*np.cos(self.ang))
+        Vinit[self.node_Q_Slack] = self.Qinit#/(abs(self.Vset)*np.sin(self.ang))
+        #return Vinit
