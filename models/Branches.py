@@ -65,8 +65,8 @@ class Branches:
         #Real
         #I1r
         #Y(a,a)
-        Y_row[idx_y] = self.from_Bnode_r
-        Y_col[idx_y] = self.from_Bnode_r
+        Y_row[idx_y] = self.from_Bnode_r #i
+        Y_col[idx_y] = self.from_Bnode_r #j
         Y_val[idx_y] = G #real resistance from node (noteice that there may be some sign error)
         idx_y +=1
         #Y(a,b)
@@ -172,6 +172,7 @@ class Branches:
         Y_val[idx_y] = -SH
         idx_y +=1
 
+        return idx_y
 
     def initialize(self,Vinit): #not sure if I need this
         Vinit[self.from_Bnode_r]=0.00001

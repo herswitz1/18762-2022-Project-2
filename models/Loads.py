@@ -70,7 +70,7 @@ class Loads:
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIrl_dvrl
         #J(i)
-        J_vec[idx_y] = -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
+        J_vec[idx_y] = -Irl#-(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
 
         idx_y += 1
         ##Y(i,j)
@@ -85,7 +85,7 @@ class Loads:
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIil_dvrl
         ##J(j)
-        J_vec[idx_y] = -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
+        J_vec[idx_y] = -Iil#-(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
 
         idx_y += 1
         ##Y(j,j)
@@ -94,7 +94,7 @@ class Loads:
         Y_val[idx_y] = -dIil_dvil
         idx_y +=1
 
-        
+        #return idx_y
 
     def stamp_non_lin(self): #not sure if I need this
         pass

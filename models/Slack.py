@@ -56,6 +56,8 @@ class Slack:
         Y_val[idx_y] = abs(self.Vset)*np.sin(self.ang)
         J_vec[idx_y] = prev_v[self.node_Q_Slack]
         idx_y +=1
+
+        #return idx_y
         
     def initialize(self,Vinit): #not sure if I need this
         ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii

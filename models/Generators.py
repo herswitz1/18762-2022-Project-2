@@ -88,7 +88,7 @@ class Generators:
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIrg_dVrg
         #J(i)(probably only need Irg)(maybe instead i need to do node_Vrg)
-        J_vec[idx_y] = -(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current(may not need all of these terms)
+        J_vec[idx_y] = -Irg#-(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current(may not need all of these terms)
         idx_y += 1
         ##Y(i,j)
         Y_row[idx_y] = self.node_Vrg
@@ -107,7 +107,7 @@ class Generators:
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIig_dVrg
         ##J(j)(probably only need Iig)
-        J_vec[idx_y] = -(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]))#J stamp for imaginary current
+        J_vec[idx_y] = -Iig#-(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]))#J stamp for imaginary current
         idx_y += 1
         ##Y(j,j)
         Y_row[idx_y] = self.node_Vig
@@ -127,7 +127,7 @@ class Generators:
         Y_val[idx_y] = -2*prev_v[self.node_Vrg]
         
         ##J(g)(proaboly only needthe square)
-        J_vec[idx_y] = -(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
+        J_vec[idx_y] = -np.square(self.Vset)#-(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
         
         idx_y +=1
         
@@ -137,9 +137,10 @@ class Generators:
         Y_val[idx_y] = 2*prev_v[self.node_Vig]
         idx_y +=1
         
+        #return idx_y
     def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
-        #Vinit[self.node_Vrg] = 1#These need to be something else
-        #Vinit[self.node_Vig] = 1
+        Vinit[self.node_Vrg] = 1#These need to be something else
+        Vinit[self.node_Vig] = 1
         Vinit[self.node_Qg] = self.Qinit
         
         pass

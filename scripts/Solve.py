@@ -72,7 +72,7 @@ def solve(TESTCASE, SETTINGS):
     ###FEEL LIKE I NEED SOMETHING LIKE Y_ROW_LIN = COPY(ROW), AND THEN SAME FOR COL AND VAL AS WELL AS NONLINEAR
 
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
-    v_init = np.zeros(size_Y*10)  # create a solution vector filled with zeros of size_Y
+    v_init = np.zeros(size_Y)  # create a solution vector filled with zeros of size_Y
     print(v_init)
     initialize(v_init,slack,bus,generator, load)
 

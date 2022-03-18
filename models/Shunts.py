@@ -79,7 +79,7 @@ class Shunts:
         Y_col[idx_y]= self.from_sh_i
         Y_val[idx_y] = -self.G_MW
         idx_y += 1
-        pass
+        #return idx_y
 
     def stamp_non_lin(self): #not sure if I need this
         pass
