@@ -48,7 +48,7 @@ def solve(TESTCASE, SETTINGS):
 
     # Assign any slack nodes
     for ele in slack:
-        ele.assign_nodes()
+        ele.assign_nodes(bus)
 
     #SHOULD i DO ASSIGN NODES FOR ALL THE OTHER OBJECTS
     ##NOT SURE IF THIS IS WHERE i SHOULD BE CALLING THESE

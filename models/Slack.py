@@ -28,8 +28,9 @@ class Slack:
         # initialize nodes
         self.node_P_Slack = None #SINCE NO VMAG AND ANGLE CAN CALCULATE REAL AND IMAGNIARY SLACK VOLTAGE
         self.node_Q_Slack = None #These should probably be P and Q two be more representative
-
-    def assign_nodes(self):
+        self.Vr_index = None
+        self.Vi_index = None
+    def assign_nodes(self,bus):
         """Assign the additional slack bus nodes for a slack bus.
 
         Returns:
@@ -37,6 +38,8 @@ class Slack:
         """
         self.node_P_Slack = Buses._node_index.__next__()#THIS BOTH ASSIGNS THE SLACK BUS NODES AND MAKES THE BUES NODE_INDEX COUNTER INCEMENT
         self.node_Q_Slack = Buses._node_index.__next__()
+        self.Vr_index = bus[Buses.bus_key_[self.Bus]].node_Vr
+        self.Vi_index = bus[Buses.bus_key_[self.Bus]].node_Vi
 
     # You should also add some other class functions you deem necessary for stamping,
     # initializing, and processing results
@@ -44,20 +47,31 @@ class Slack:
         pass
 
     def sparse_stamp_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y, prev_v): #not sure if I need this
-        #Real slack stamp
+        #Real slack stamp 1
         Y_row[idx_y] = self.node_P_Slack
         Y_col[idx_y] = self.node_P_Slack
-        Y_val[idx_y] = abs(self.Vset)*np.cos(self.ang)
-        J_vec[idx_y] = prev_v[self.node_P_Slack]
+        Y_val[idx_y] = 1#abs(self.Vset)*np.cos(self.ang) #maybe this should be 1
+        J_vec[self.node_P_Slack] = abs(self.Vset)*np.cos(self.ang)#prev_v[self.node_P_Slack] #may nnot need this node
         idx_y +=1
-        #Imaginary slack stamp
+        Y_row[idx_y] = self.Vr_index
+        Y_col[idx_y] = self.node_P_Slack
+        Y_val[idx_y] = 1 #maybe this should be 1
+        #J_vec[self.node_P_Slack] += prev_v[self.node_P_Slack]
+        idx_y +=1
+        
+        #Imaginary slack stamp 2
         Y_row[idx_y] = self.node_Q_Slack
         Y_col[idx_y] = self.node_Q_Slack
-        Y_val[idx_y] = abs(self.Vset)*np.sin(self.ang)
-        J_vec[idx_y] = prev_v[self.node_Q_Slack]
+        Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
+        J_vec[self.node_Q_Slack] = abs(self.Vset)*np.sin(self.ang)#prev_v[self.node_Q_Slack]
         idx_y +=1
 
-        #return idx_y
+        Y_row[idx_y] = self.Vi_index
+        Y_col[idx_y] = self.node_Q_Slack
+        Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
+        #J_vec[self.node_Q_Slack] += prev_v[self.node_Q_Slack]
+        idx_y +=1
+        return idx_y
         
     def initialize(self,Vinit): #not sure if I need this
         ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii

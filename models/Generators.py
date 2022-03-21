@@ -83,64 +83,64 @@ class Generators:
         
         ###Makeing stamps
         #real current row
-        ##Y(i,i)
+        ##Y(i,i) 1
         Y_row[idx_y] = self.node_Vrg
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIrg_dVrg
         #J(i)(probably only need Irg)(maybe instead i need to do node_Vrg)
-        J_vec[idx_y] = -Irg#-(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current(may not need all of these terms)
+        J_vec[self.node_Vrg] = -(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current(may not need all of these terms)
         idx_y += 1
-        ##Y(i,j)
+        ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrg
         Y_col[idx_y] = self.node_Vig
         Y_val[idx_y] = dIrg_dVig
         idx_y +=1
-        ##Y(i,k)
+        ##Y(i,k) 3
         Y_row[idx_y] = self.node_Vrg
         Y_col[idx_y] = self.node_Qg
         Y_val[idx_y] = dIrg_dQg
         idx_y +=1
 
         ##imaginary current row
-        ##Y(j,i)
+        ##Y(j,i) 4
         Y_row[idx_y] = self.node_Vig
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIig_dVrg
         ##J(j)(probably only need Iig)
-        J_vec[idx_y] = -Iig#-(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]))#J stamp for imaginary current
+        J_vec[self.node_Vig] = -(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]))#J stamp for imaginary current
         idx_y += 1
-        ##Y(j,j)
+        ##Y(j,j) 5
         Y_row[idx_y] = self.node_Vig
         Y_col[idx_y] = self.node_Vig
         Y_val[idx_y] = -dIig_dVig
         idx_y +=1
-        ##Y(j,k)
+        ##Y(j,k) 6
         Y_row[idx_y] = self.node_Vig
         Y_col[idx_y] = self.node_Qg
         Y_val[idx_y] = dIig_dQg
         idx_y +=1
         
         ##Reactivepower row
-        ##Y(g,i)
+        ##Y(g,i) 7
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = -2*prev_v[self.node_Vrg]
         
         ##J(g)(proaboly only needthe square)
-        J_vec[idx_y] = -np.square(self.Vset)#-(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
+        J_vec[self.node_Qg] = -(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
         
         idx_y +=1
         
-        #Y(g,j)
+        #Y(g,j) 8
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vig
         Y_val[idx_y] = 2*prev_v[self.node_Vig]
         idx_y +=1
         
-        #return idx_y
+        return idx_y
     def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
-        Vinit[self.node_Vrg] = 1#These need to be something else
-        Vinit[self.node_Vig] = 1
+        #Vinit[self.node_Vrg] = 1#These need to be something else
+        #Vinit[self.node_Vig] = 1
         Vinit[self.node_Qg] = self.Qinit
         
         pass

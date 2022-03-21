@@ -65,41 +65,41 @@ class Loads:
         dIil_dvil = ((Vrl_il)*self.P - (self.P*prev_v[self.node_Vil] - self.Q*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIil/dVil
         ###Makeing stamps
         #real current row
-        ##Y(i,i)
+        ##Y(i,i) 1
         Y_row[idx_y] = self.node_Vrl
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIrl_dvrl
         #J(i)
-        J_vec[idx_y] = -Irl#-(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
+        J_vec[self.node_Vrl] = -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
 
         idx_y += 1
-        ##Y(i,j)
+        ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrl
         Y_col[idx_y] = self.node_Vil
         Y_val[idx_y] = dIrl_dvil
         idx_y +=1
 
         ##imaginary current row
-        ##Y(j,i)
+        ##Y(j,i) 3
         Y_row[idx_y] = self.node_Vil
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIil_dvrl
         ##J(j)
-        J_vec[idx_y] = -Iil#-(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
+        J_vec[self.node_Vil] = -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
 
         idx_y += 1
-        ##Y(j,j)
+        ##Y(j,j) 4
         Y_row[idx_y] = self.node_Vil
         Y_col[idx_y] = self.node_Vil
         Y_val[idx_y] = -dIil_dvil
         idx_y +=1
 
-        #return idx_y
+        return idx_y
 
     def stamp_non_lin(self): #not sure if I need this
         pass
         
     def initialize(self, Vinit): #For liniear components stamp 0(not sure what to give them iniitlaly)
-        Vinit[self.node_Vrl] = 1#These are wrong
-        Vinit[self.node_Vil] = 1
+        #Vinit[self.node_Vrl] = 1#These are wrong
+        #Vinit[self.node_Vil] = 1
         pass

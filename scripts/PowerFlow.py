@@ -1,5 +1,6 @@
 import numpy as np
-from scipy.sparse import csc_matrix
+from numpy.linalg import solve
+from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import spsolve
 
 class PowerFlow:
@@ -33,11 +34,12 @@ class PowerFlow:
         Y_col = Y_col_lin + Y_col_nonlin
         Y_val = Y_val_lin + Y_val_nonlin
         J_vec = J_vec_lin + J_vec_non_lin
-        Y_mtx = csc_matrix((Y_val, (Y_row, Y_col)), shape=(len(Y_row),len(Y_col))) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
+        #maybe need a J_val vect and a J col vector
+        Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
         print(type(Y_mtx))
         print(type(J_vec))
         Ydense = Y_mtx.todense() 
-        print(Ydense)
+        #print(Ydense)
 
         ####found this code online in order to check for 0 row or 0 cols
         check_row = np.all((Ydense == 0), axis=1)
@@ -45,14 +47,15 @@ class PowerFlow:
         for i in range(len(check_row)):
             if check_row[i]:
                 print('Row: ', i)
-        #check_col = np.all((Ydense == 0), axis=0)
-        #print('Columns that contain only zero:')
-        #for j in range(len(check_col)):
-        #    if check_col[j]:
-            #    print('Column: ', j)
+        # check_col = np.all((Ydense == 0), axis=0)
+        # print('Columns that contain only zero:')
+        # for j in range(len(check_col)):
+        #     if check_col[j]:
+        #         print('Column: ', j)
         ################################
 
         V_k = spsolve(Y_mtx, J_vec)
+        #V_k = solve(Ydense, J_vec)
         ##DO I NEED TO KEEP TRACK TO THE PREVIOUS V VECTOR IN ORDER TO CALCULAT THE ERROR
 
         return V_k
@@ -104,13 +107,13 @@ class PowerFlow:
         #idx_y = 0 #not sure about this
 
         for generators in generator:
-            generators.sparse_stamp_non_lin(Y_row_non_lin,Y_col_non_lin, Y_val_non_lin,J_vec_non_lin, idx_y, prev_v)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
+            idx_y=generators.sparse_stamp_non_lin(Y_row_non_lin,Y_col_non_lin, Y_val_non_lin,J_vec_non_lin, idx_y, prev_v)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
              
         for loads in load:
-            loads.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, idx_y,prev_v)
+            idx_y =loads.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, idx_y,prev_v)
 
         for slack in slack: #NOT SURE IF SOMETHING IS WRONG WITH THIS CONFIGURATION
-            slack.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin, Y_val_non_lin, J_vec_non_lin, idx_y, prev_v)
+            idx_y = slack.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin, Y_val_non_lin, J_vec_non_lin, idx_y, prev_v)
 
         #NOT SURE WHAT TO RETURN
         
@@ -155,14 +158,26 @@ class PowerFlow:
         # Y_val_non_lin = []
         # J_vec_lin = []
         # J_vec_non_lin = []
+        #######WHAT i THINK IT SHOULD BE
+        # Y_row_lin = np.zeros(size_Y)
+        # Y_col_lin = np.zeros(size_Y)
+        # Y_val_lin =np.zeros(size_Y)
+        # Y_row_non_lin = np.zeros(size_Y)
+        # Y_col_non_lin = np.zeros(size_Y)
+        # Y_val_non_lin = np.zeros(size_Y)
+        # J_vec_lin = np.zeros(size_Y)
+        # J_vec_non_lin = np.zeros(size_Y)
+        ##############
         Y_row_lin = np.zeros(new_size)
         Y_col_lin = np.zeros(new_size)
         Y_val_lin =np.zeros(new_size)
         Y_row_non_lin = np.zeros(new_size)
         Y_col_non_lin = np.zeros(new_size)
         Y_val_non_lin = np.zeros(new_size)
-        J_vec_lin = np.zeros(new_size)
-        J_vec_non_lin = np.zeros(new_size)
+        J_vec_lin = np.zeros(size_Y)
+        J_vec_non_lin = np.zeros(size_Y)
+        ##############
+
         # # # Copy v_init into the Solution Vectors used during NR, v, and the final solution vector v_sol # # #
         v = np.copy(v_init)
         v_sol = np.copy(v)
@@ -183,7 +198,7 @@ class PowerFlow:
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
-        while err_max > tol and NR_count <20:
+        while err_max > tol and NR_count <100:#20 should be setting["max iter"]
             ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
 
 
@@ -202,7 +217,7 @@ class PowerFlow:
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 1, STEP 2.6 - Finish the check_error function which calculates the maximum error, err_max
             #  You need to decide the input arguments and return values.
-            self.check_error(v, v_sol, err_max)
+            err_max = self.check_error(v, v_sol, err_max)
             print(err_max)
 
             # # # Compute The Error at the current NR iteration # # #
@@ -214,10 +229,10 @@ class PowerFlow:
             else:
                 pass
             NR_count +=1
-            Y_row_non_lin = np.zeros(size_Y*10)
-            Y_col_non_lin = np.zeros(size_Y*10)
-            Y_val_non_lin = np.zeros(size_Y*10)
-            J_vec_non_lin = np.zeros(size_Y*10)
+            Y_row_non_lin = np.zeros(new_size)
+            Y_col_non_lin = np.zeros(new_size)
+            Y_val_non_lin = np.zeros(new_size)
+            J_vec_non_lin = np.zeros(size_Y)
             idx_y = Hidx_y
             v_sol = v
         return v

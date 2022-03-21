@@ -41,8 +41,10 @@ class Branches:
         self.rateB = rateB
         self.rateC = rateC
         self.id = self._ids.__next__()#not sure if this should be first or last
-        self.from_Bnode = None
-        self.to_Bnode = None
+        self.from_Bnode_r = None
+        self.to_Bnode_r = None
+        self.from_Bnode_i = None
+        self.to_Bnode_i = None
 
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
@@ -77,17 +79,17 @@ class Branches:
         #Y(a,c)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = B
+        Y_val[idx_y] = -B
         idx_y +=1
         #Y(a,d)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.to_Bnode_i
-        Y_val[idx_y] = -B
+        Y_val[idx_y] = B
         idx_y +=1
         #Y(a,a) shunt real at from node
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = -SH
+        Y_val[idx_y] = SH
         idx_y +=1
 
         #I2r
@@ -113,7 +115,7 @@ class Branches:
         idx_y +=1
         #Y(b,b) real shunt at to node
         Y_row[idx_y] = self.to_Bnode_r
-        Y_col[idx_y] = self.to_Bnode_r
+        Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = -SH
         idx_y +=1
 
