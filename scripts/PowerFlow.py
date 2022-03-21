@@ -67,9 +67,12 @@ class PowerFlow:
 
     def check_error(self,v_current,v_prev,err_max):
         #CHECKES THE NR TO SEE IF IT CONVERGES IF SO THIS IS OUR V VECTOR
+        #hist_nr =np.amax(np.abs(v_prev))
+        #err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
+
+        err_check = np.abs(v_current)-np.abs(v_prev)
         hist_nr =np.amax(np.abs(v_prev))
         err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
-
         v_prev = v_current
 
         return err_max
@@ -198,7 +201,7 @@ class PowerFlow:
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
-        while err_max > tol and NR_count <100:#20 should be setting["max iter"]
+        while err_max > tol and NR_count <1000:#20 should be setting["max iter"]
             ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
 
 

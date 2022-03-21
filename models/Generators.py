@@ -124,7 +124,7 @@ class Generators:
         ##Y(g,i) 7
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vrg
-        Y_val[idx_y] = -2*prev_v[self.node_Vrg]
+        Y_val[idx_y] = 2*prev_v[self.node_Vrg]
         
         ##J(g)(proaboly only needthe square)
         J_vec[self.node_Qg] = -(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
