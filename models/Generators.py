@@ -107,12 +107,12 @@ class Generators:
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIig_dVrg
         ##J(j)(probably only need Iig)
-        J_vec[self.node_Vig] = -(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]))#J stamp for imaginary current
+        J_vec[self.node_Vig] = -(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]) -(dIig_dQg*prev_v[self.node_Qg]))#J stamp for imaginary current
         idx_y += 1
         ##Y(j,j) 5
         Y_row[idx_y] = self.node_Vig
         Y_col[idx_y] = self.node_Vig
-        Y_val[idx_y] = -dIig_dVig
+        Y_val[idx_y] = dIig_dVig
         idx_y +=1
         ##Y(j,k) 6
         Y_row[idx_y] = self.node_Vig
@@ -126,7 +126,7 @@ class Generators:
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = 2*prev_v[self.node_Vrg]
         
-        ##J(g)(proaboly only needthe square)
+        ##J(g)(SOMETHING FEELS OFF WITH THIS)
         J_vec[self.node_Qg] = -(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
         
         idx_y +=1

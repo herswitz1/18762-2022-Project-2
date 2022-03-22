@@ -91,7 +91,7 @@ class Loads:
         ##Y(j,j) 4
         Y_row[idx_y] = self.node_Vil
         Y_col[idx_y] = self.node_Vil
-        Y_val[idx_y] = -dIil_dvil
+        Y_val[idx_y] = dIil_dvil
         idx_y +=1
 
         return idx_y

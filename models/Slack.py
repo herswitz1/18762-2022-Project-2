@@ -53,6 +53,7 @@ class Slack:
         Y_val[idx_y] = 1#abs(self.Vset)*np.cos(self.ang) #maybe this should be 1
         J_vec[self.node_P_Slack] = abs(self.Vset)*np.cos(self.ang)#prev_v[self.node_P_Slack] #may nnot need this node
         idx_y +=1
+        
         Y_row[idx_y] = self.Vr_index
         Y_col[idx_y] = self.node_P_Slack
         Y_val[idx_y] = 1 #maybe this should be 1

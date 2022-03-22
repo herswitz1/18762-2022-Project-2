@@ -101,7 +101,7 @@ class Branches:
         #Y(c,c)
         Y_row[idx_y] = self.to_Bnode_r
         Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = G#+SH
+        Y_val[idx_y] = G#-SH
         idx_y +=1
         #Y(c,b)
         Y_row[idx_y] = self.to_Bnode_r
@@ -134,7 +134,7 @@ class Branches:
         #Y(b,b)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = G#-SH
+        Y_val[idx_y] = G#+SH
         idx_y +=1
         #Y(b,d)
         Y_row[idx_y] = self.from_Bnode_i
