@@ -69,7 +69,7 @@ class Branches:
         #Y(a,a)
         Y_row[idx_y] = self.from_Bnode_r #i
         Y_col[idx_y] = self.from_Bnode_r #j
-        Y_val[idx_y] = G#-SH #real resistance from node (noteice that there may be some sign error)
+        Y_val[idx_y] = G#real resistance from node (noteice that there may be some sign error)
         idx_y +=1
         #Y(a,c)
         Y_row[idx_y] = self.from_Bnode_r
@@ -79,7 +79,7 @@ class Branches:
         #Y(a,b)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = -B
+        Y_val[idx_y] = -B-SH
         idx_y +=1
         #Y(a,d)
         Y_row[idx_y] = self.from_Bnode_r
@@ -111,7 +111,7 @@ class Branches:
         #Y(c,d)
         Y_row[idx_y] = self.to_Bnode_r
         Y_col[idx_y] = self.to_Bnode_i
-        Y_val[idx_y] = -B
+        Y_val[idx_y] = -B+SH
         idx_y +=1
         # #Y(b,b) real shunt at to node
         # Y_row[idx_y] = self.to_Bnode_r
@@ -124,7 +124,7 @@ class Branches:
         #Y(b,a)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = B #think this may be in correct
+        Y_val[idx_y] = B+SH #
         idx_y +=1
         #Y(b,c)
         Y_row[idx_y] = self.from_Bnode_i
@@ -156,7 +156,7 @@ class Branches:
         #Y(d,c)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = B
+        Y_val[idx_y] = B-SH
         idx_y +=1
         #Y(d,b)
         Y_row[idx_y] = self.to_Bnode_i

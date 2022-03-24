@@ -121,20 +121,23 @@ class Generators:
         idx_y +=1
         
         ##Reactivepower row
+        V_exact = np.square(self.Vset) - np.square(prev_v[self.node_Vrg]) - np.square(prev_v[self.node_Vig])
+        dV_dvr = -2*prev_v[self.node_Vrg]
+        dV_dvi = -2*prev_v[self.node_Vig]
         ##Y(g,i) 7
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vrg
-        Y_val[idx_y] = 2*prev_v[self.node_Vrg]
+        Y_val[idx_y] = dV_dvr#-2*prev_v[self.node_Vrg]
         
         ##J(g)(SOMETHING FEELS OFF WITH THIS)
-        J_vec[self.node_Qg] = -(np.square(self.Vset) -(2*prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(2*prev_v[self.node_Vig]*prev_v[self.node_Vig]))
+        J_vec[self.node_Qg] = -(V_exact - (dV_dvr*prev_v[self.node_Vrg]) -(dV_dvi*prev_v[self.node_Vig]))#-(np.square(self.Vset) -(prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(prev_v[self.node_Vig]*prev_v[self.node_Vig]))
         
         idx_y +=1
         
         #Y(g,j) 8
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vig
-        Y_val[idx_y] = 2*prev_v[self.node_Vig]
+        Y_val[idx_y] = dV_dvi#-2*prev_v[self.node_Vig]
         idx_y +=1
         
         return idx_y

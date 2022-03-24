@@ -16,8 +16,8 @@ def initialize(v_init,slack, bus,generator, load):#:generator,transformer,branch
     #    branches.initialize(v_init)
     #for shunts in shunt:
     #    shunts.initialize(v_init)
-    #for loads in load:
-    #    loads.initialize(v_init)
+    for loads in load:
+        loads.initialize(v_init)
     
     #do I need a line to specifically return v_init
     pass

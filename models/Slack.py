@@ -49,7 +49,7 @@ class Slack:
     def sparse_stamp_non_lin(self,Y_row, Y_col, Y_val, J_vec, idx_y, prev_v): #not sure if I need this
         #Real slack stamp 1
         Y_row[idx_y] = self.node_P_Slack
-        Y_col[idx_y] = self.node_P_Slack
+        Y_col[idx_y] = self.Vr_index
         Y_val[idx_y] = 1#abs(self.Vset)*np.cos(self.ang) #maybe this should be 1
         J_vec[self.node_P_Slack] = abs(self.Vset)*np.cos(self.ang)#prev_v[self.node_P_Slack] #may nnot need this node
         idx_y +=1
@@ -57,12 +57,12 @@ class Slack:
         Y_row[idx_y] = self.Vr_index
         Y_col[idx_y] = self.node_P_Slack
         Y_val[idx_y] = 1 #maybe this should be 1
-        #J_vec[self.node_P_Slack] += prev_v[self.node_P_Slack]
+        #J_vec[self.Vr_index] = 0#prev_v[self.node_P_Slack]
         idx_y +=1
         
         #Imaginary slack stamp 2
         Y_row[idx_y] = self.node_Q_Slack
-        Y_col[idx_y] = self.node_Q_Slack
+        Y_col[idx_y] = self.Vi_index
         Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
         J_vec[self.node_Q_Slack] = abs(self.Vset)*np.sin(self.ang)#prev_v[self.node_Q_Slack]
         idx_y +=1
@@ -70,12 +70,12 @@ class Slack:
         Y_row[idx_y] = self.Vi_index
         Y_col[idx_y] = self.node_Q_Slack
         Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
-        #J_vec[self.node_Q_Slack] += prev_v[self.node_Q_Slack]
+        #J_vec[self.Vi_index] += 0# prev_v[self.node_Q_Slack]
         idx_y +=1
         return idx_y
         
     def initialize(self,Vinit): #not sure if I need this
         ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii
-        Vinit[self.node_P_Slack] = self.Pinit#/(abs(self.Vset)*np.cos(self.ang))
-        Vinit[self.node_Q_Slack] = self.Qinit#/(abs(self.Vset)*np.sin(self.ang))
+        Vinit[self.node_P_Slack] = self.Pinit#(abs(self.Vset)*np.cos(self.ang))
+        Vinit[self.node_Q_Slack] = self.Qinit#(abs(self.Vset)*np.sin(self.ang))
         #return Vinit

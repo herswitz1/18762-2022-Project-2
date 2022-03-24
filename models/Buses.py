@@ -58,14 +58,16 @@ class Buses:
         if self.Type == 1 or self.Type == 3:
             self.node_Vr = self._node_index.__next__()
             self.node_Vi = self._node_index.__next__()
-            print(str(self.node_Vr) + '_real voltage PQ or slack' +  str(self.node_Vi) + '_imganary voltage PQ or slack')
-
+            if self.Type == 3:
+                print('Bus='+str(self.Bus) +' ' + str(self.node_Vr) + '_real voltage slack index ' +  str(self.node_Vi) + '_imganary voltage slack index')
+            else:
+                 print('Bus='+str(self.Bus) +' ' + str(self.node_Vr) + '_real voltage PQ index ' +  str(self.node_Vi) + '_imganary voltage PQ index')
         # If PV Bus
         elif self.Type == 2:
             self.node_Vr = self._node_index.__next__()
             self.node_Vi = self._node_index.__next__()
             self.node_Q = self._node_index.__next__()
-            print(str(self.node_Vr) + '_real voltage PV ' +  str(self.node_Vi) + '_imganary voltage PV ' + str(self.node_Q) + '_q')
+            print('Bus='+str(self.Bus) +' ' +str(self.node_Vr) + '_real voltage PV ' +  str(self.node_Vi) + '_imganary voltage PV ' + str(self.node_Q) + '_q')
     
     def initialize(self, v_init):
         if self.Type == 1 or self.Type == 3:

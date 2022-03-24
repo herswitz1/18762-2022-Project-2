@@ -36,17 +36,17 @@ class PowerFlow:
         J_vec = J_vec_lin + J_vec_non_lin
         #maybe need a J_val vect and a J col vector
         Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
-        print(type(Y_mtx))
-        print(type(J_vec))
-        Ydense = Y_mtx.todense() 
+        #print(type(Y_mtx))
+        #print(type(J_vec))
+        #Ydense = Y_mtx.todense() 
         #print(Ydense)
 
         ####found this code online in order to check for 0 row or 0 cols
-        check_row = np.all((Ydense == 0), axis=1)
-        print('Rows that contain only zero:')
-        for i in range(len(check_row)):
-            if check_row[i]:
-                print('Row: ', i)
+        # check_row = np.all((Ydense == 0), axis=1)
+        # print('Rows that contain only zero:')
+        # for i in range(len(check_row)):
+        #     if check_row[i]:
+        #         print('Row: ', i)
         # check_col = np.all((Ydense == 0), axis=0)
         # print('Columns that contain only zero:')
         # for j in range(len(check_col)):
@@ -194,7 +194,7 @@ class PowerFlow:
 
         # # # Initialize While Loop (NR) Variables # # #
         # TODO: PART 1, STEP 2.2 - Initialize the NR variables
-        err_max = 1#really bad intial guess  # maximum error at the current NR iteration
+        err_max = 2#really bad intial guess  # maximum error at the current NR iteration
         tol = self.tol#settings["Tolerance"]#None  # chosen NR tolerance
         NR_count = 0  # current NR iteration(HOW SHOULD WE USE THIS?)
 

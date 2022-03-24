@@ -76,7 +76,7 @@ class Loads:
         ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrl
         Y_col[idx_y] = self.node_Vil
-        Y_val[idx_y] = dIrl_dvil
+        Y_val[idx_y] =  dIrl_dvil
         idx_y +=1
 
         ##imaginary current row

@@ -73,7 +73,7 @@ def solve(TESTCASE, SETTINGS):
 
     # TODO: PART 1, STEP 1 - Complete the function to initialize your solution vector v_init.
     v_init = np.zeros(size_Y)  # create a solution vector filled with zeros of size_Y
-    print(v_init)
+    #print(v_init)
     initialize(v_init,slack,bus,generator, load)
 
     # # # Run Power Flow # # #
@@ -91,4 +91,4 @@ def solve(TESTCASE, SETTINGS):
     # TODO: PART 1, STEP 3 - Write a process_results function to compute the relevant results (voltages, powers,
     #  and anything else of interest) and find the voltage profile (maximum and minimum voltages in the case).
     #  You can decide which arguments to pass to this function yourself.
-    process_results()
+    process_results(v, bus)
