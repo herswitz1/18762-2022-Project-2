@@ -73,13 +73,13 @@ class Generators:
         Iig = ((-self.P*prev_v[self.node_Vig]) + (prev_v[self.node_Qg]*prev_v[self.node_Vrg]))/(Vrg_ig) ##current value of imaginary generator current
         ##calculating partials
         #real
-        dIrg_dQg = -(prev_v[self.node_Vig])/(Vrg_ig)
-        dIrg_dVrg = ((Vrg_ig)*-self.P - (-self.P*prev_v[self.node_Vrg] - prev_v[self.node_Qg]*prev_v[self.node_Vig])*(2*prev_v[self.node_Vrg]))/(np.square(Vrg_ig)) #dIrg/dVrg
-        dIrg_dVig = ((Vrg_ig)*-prev_v[self.node_Qg] - (-self.P*prev_v[self.node_Vrg] - prev_v[self.node_Qg]*prev_v[self.node_Vig])*(2*prev_v[self.node_Vig]))/(np.square(Vrg_ig)) #dIrg/dVig
+        dIrg_dQg = (-prev_v[self.node_Vig])/(Vrg_ig)
+        dIrg_dVrg = ((Vrg_ig)*(-self.P) - (-self.P*prev_v[self.node_Vrg] - prev_v[self.node_Qg]*prev_v[self.node_Vig])*(2*prev_v[self.node_Vrg]))/(np.square(Vrg_ig)) #dIrg/dVrg
+        dIrg_dVig = ((Vrg_ig)*(-prev_v[self.node_Qg]) - (-self.P*prev_v[self.node_Vrg] - prev_v[self.node_Qg]*prev_v[self.node_Vig])*(2*prev_v[self.node_Vig]))/(np.square(Vrg_ig)) #dIrg/dVig
         #imaginary
         dIig_dQg = (prev_v[self.node_Vrg])/(Vrg_ig)
         dIig_dVrg = ((Vrg_ig)*(prev_v[self.node_Qg]) - (-self.P*prev_v[self.node_Vig] + prev_v[self.node_Qg]*prev_v[self.node_Vrg])*(2*prev_v[self.node_Vrg]))/(np.square(Vrg_ig)) #dIig/dVrg
-        dIig_dVig = ((Vrg_ig)*-self.P - (-self.P*prev_v[self.node_Vig] + prev_v[self.node_Qg]*prev_v[self.node_Vrg])*(2*prev_v[self.node_Vig]))/(np.square(Vrg_ig)) #dIig/dVig
+        dIig_dVig = ((Vrg_ig)*(-self.P) - (-self.P*prev_v[self.node_Vig] + prev_v[self.node_Qg]*prev_v[self.node_Vrg])*(2*prev_v[self.node_Vig]))/(np.square(Vrg_ig)) #dIig/dVig
         
         ###Makeing stamps
         #real current row
@@ -121,9 +121,9 @@ class Generators:
         idx_y +=1
         
         ##Reactivepower row
-        V_exact = np.square(self.Vset) - np.square(prev_v[self.node_Vrg]) - np.square(prev_v[self.node_Vig])
-        dV_dvr = -2*prev_v[self.node_Vrg]
-        dV_dvi = -2*prev_v[self.node_Vig]
+        V_exact = -np.square(self.Vset) + np.square(prev_v[self.node_Vrg]) + np.square(prev_v[self.node_Vig])
+        dV_dvr = 2*prev_v[self.node_Vrg]
+        dV_dvi = 2*prev_v[self.node_Vig]
         ##Y(g,i) 7
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vrg

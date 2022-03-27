@@ -27,12 +27,12 @@ class PowerFlow:
         self.max_iters = max_iters
         self.enable_limiting = enable_limiting
 
-    def solve(self,Y_row_lin, Y_row_nonlin, Y_col_lin, Y_col_nonlin, Y_val_lin, Y_val_nonlin, J_vec_lin, J_vec_non_lin,size_Y):
+    def solve(self,Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y):
         #essitially takes in the Y and J matrix in order to solve 
         #V_k = np.linalg.solve(Y,J)
-        Y_row = Y_row_lin + Y_row_nonlin
-        Y_col = Y_col_lin + Y_col_nonlin
-        Y_val = Y_val_lin + Y_val_nonlin
+        Y_row = Y_row_lin + Y_row_non_lin
+        Y_col = Y_col_lin + Y_col_non_lin
+        Y_val = Y_val_lin + Y_val_non_lin
         J_vec = J_vec_lin + J_vec_non_lin
         #maybe need a J_val vect and a J col vector
         Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
@@ -65,7 +65,7 @@ class PowerFlow:
         #not sure what happens here possible huristics
         pass
 
-    def check_error(self,v_current,v_prev,err_max):
+    def check_error(self,v_current,v_prev):
         #CHECKES THE NR TO SEE IF IT CONVERGES IF SO THIS IS OUR V VECTOR
         #hist_nr =np.amax(np.abs(v_prev))
         #err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
@@ -73,7 +73,7 @@ class PowerFlow:
         err_check = np.abs(v_current)-np.abs(v_prev)
         hist_nr =np.amax(np.abs(v_prev))
         err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
-        v_prev = v_current
+        #v_prev = v_current
 
         return err_max
         
@@ -197,7 +197,7 @@ class PowerFlow:
         err_max = 2#really bad intial guess  # maximum error at the current NR iteration
         tol = self.tol#settings["Tolerance"]#None  # chosen NR tolerance
         NR_count = 0  # current NR iteration(HOW SHOULD WE USE THIS?)
-
+        err = 1000
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
@@ -209,19 +209,23 @@ class PowerFlow:
             # TODO: PART 1, STEP 2.4 - Complete the stamp_nonlinear function which stamps all nonlinear power grid
             #  elements. This function should call the stamp_nonlinear function of each nonlinear element and return
             #  an updated Y matrix. You need to decide the input arguments and return values.
-            self.stamp_nonlinear(Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, generator,load,slack,v_sol,idx_y)#feel like something is off
+            self.stamp_nonlinear(Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, generator,load,slack,v,idx_y)#feel like something is off
 
             # # # Solve The System # # #
             # TODO: PART 1, STEP 2.5 - Complete the solve function which solves system of equations Yv = J. The
             #  function should return a new v_sol.
             #  You need to decide the input arguments and return values.
-            v = self.solve(Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y)
+            v_sol = self.solve(Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y)
 
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 1, STEP 2.6 - Finish the check_error function which calculates the maximum error, err_max
             #  You need to decide the input arguments and return values.
-            err_max = self.check_error(v, v_sol, err_max)
+            err_max = self.check_error(v_sol, v)
             print(err_max)
+            if err_max <err:
+                err = err_max
+                v_check = v_sol
+            
 
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 2, STEP 1 - Develop the apply_limiting function which implements voltage and reactive power
@@ -236,6 +240,7 @@ class PowerFlow:
             Y_col_non_lin = np.zeros(new_size)
             Y_val_non_lin = np.zeros(new_size)
             J_vec_non_lin = np.zeros(size_Y)
-            idx_y = Hidx_y
-            v_sol = v
-        return v
+            #idx_y = Hidx_y
+            v = v_sol
+        print(v_check)
+        return v_sol
