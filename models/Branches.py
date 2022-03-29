@@ -61,11 +61,11 @@ class Branches:
 
     def sparse_stamp_lin(self, Y_row, Y_col,Y_val, idx_y): #not sure if I need this
         G = self.r/(np.square(self.r)+np.square(self.x))
-        B = self.x/(np.square(self.r)+np.square(self.x))
+        B = -self.x/(np.square(self.r)+np.square(self.x))
         SH = self.b/2
         
         #Real
-        #I1r
+        #I1r(row 1)
         #Y(a,a)
         Y_row[idx_y] = self.from_Bnode_r #i
         Y_col[idx_y] = self.from_Bnode_r #j
@@ -79,12 +79,12 @@ class Branches:
         #Y(a,b)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = -B-SH
+        Y_val[idx_y] = -B+SH
         idx_y +=1
         #Y(a,d)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.to_Bnode_i
-        Y_val[idx_y] = B
+        Y_val[idx_y] = B#-SH
         idx_y +=1
         # #Y(a,a) shunt real at from node
         # Y_row[idx_y] = self.from_Bnode_r
@@ -92,7 +92,7 @@ class Branches:
         # Y_val[idx_y] = SH
         # idx_y +=1
 
-        #I2r
+        #I2r(row 3)
         #Y(c,a)
         Y_row[idx_y] = self.to_Bnode_r
         Y_col[idx_y] = self.from_Bnode_r
@@ -101,7 +101,7 @@ class Branches:
         #Y(c,c)
         Y_row[idx_y] = self.to_Bnode_r
         Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = G#-SH
+        Y_val[idx_y] = G
         idx_y +=1
         #Y(c,b)
         Y_row[idx_y] = self.to_Bnode_r
@@ -120,11 +120,11 @@ class Branches:
         # idx_y +=1
 
         #Imaginary
-        #Ii1 (feel likere this is some error here)
+        #Ii1 (row 2)
         #Y(b,a)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = B+SH #
+        Y_val[idx_y] = B-SH #
         idx_y +=1
         #Y(b,c)
         Y_row[idx_y] = self.from_Bnode_i
@@ -148,15 +148,15 @@ class Branches:
         # idx_y +=1
 
         #I2i
-        #Y(d,a)
+        #Y(d,a)(row 4)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = -B #this may be negative
+        Y_val[idx_y] = B #this may be negative
         idx_y +=1
         #Y(d,c)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = B-SH
+        Y_val[idx_y] = -B-SH
         idx_y +=1
         #Y(d,b)
         Y_row[idx_y] = self.to_Bnode_i
@@ -166,7 +166,7 @@ class Branches:
         #Y(d,d)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.to_Bnode_i
-        Y_val[idx_y] = G#+SH
+        Y_val[idx_y] = G
         idx_y +=1
         # #Y(d,d) shunt for imagainary to node
         # Y_row[idx_y] = self.to_Bnode_i
