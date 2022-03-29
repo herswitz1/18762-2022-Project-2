@@ -151,7 +151,7 @@ class Generators:
     def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
         #Vinit[self.node_Vrg] = 1#These need to be something else
         #Vinit[self.node_Vig] = 1
-        Vinit[self.node_Qg] = self.Qinit
+        Vinit[self.node_Qg] = self.Qinit/100
         
         pass
         

@@ -57,15 +57,15 @@ class Transformers:
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
     def assign_nodes(self,bus): #not sure if I need this
-        # self.V1r = Buses._node_index.__next__()#not sure where to use these
-        # self.V1i = Buses._node_index.__next__()#V
+        
         # self.I2r = Buses._node_index.__next__()#
         # self.I2i = Buses._node_index.__next__()
         self.from_Bnode_r = bus[Buses.bus_key_[self.from_bus]].node_Vr#Vr2
         self.from_Bnode_i = bus[Buses.bus_key_[self.from_bus]].node_Vi#Vi2 (c)
         self.to_Bnode_r = bus[Buses.bus_key_[self.to_bus]].node_Vr#Vr2 (b)
         self.to_Bnode_i = bus[Buses.bus_key_[self.to_bus]].node_Vi#Vmi (d)
-        
+        self.V1r = Buses._node_index.__next__()#not sure where to use these
+        self.V1i = Buses._node_index.__next__()#V
 
     def sparse_stamp_lin(self,Y_row_lin, Y_col_lin, Y_val_lin, idx_y,prev_v): #not sure if I need this
         G = self.r/(np.square(self.r)+np.square(self.x))
@@ -121,6 +121,60 @@ class Transformers:
         Y_row_lin[idx_y] = self.to_Bnode_i
         Y_col_lin[idx_y] = self.to_Bnode_i
         Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_i]*np.cos(self.ang))
+        idx_y +=1
+        ###EVERYTHING ABOVE THIS POINT SEEMS TO WORK
+        ###loss in secondary
+        ##real loses
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.from_Bnode_r
+        Y_val_lin[idx_y] = G
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.from_Bnode_i
+        Y_val_lin[idx_y] = B
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.V1r
+        Y_val_lin[idx_y] = -G
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.V1i
+        Y_val_lin[idx_y] = -B
+        idx_y +=1
+
+        ##imaginary losses
+        Y_row_lin[idx_y] = self.to_Bnode_i
+        Y_col_lin[idx_y] = self.from_Bnode_r
+        Y_val_lin[idx_y] = -B
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.to_Bnode_i
+        Y_col_lin[idx_y] = self.from_Bnode_i
+        Y_val_lin[idx_y] = G
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.to_Bnode_i
+        Y_col_lin[idx_y] = self.V1r
+        Y_val_lin[idx_y] = B
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.to_Bnode_i
+        Y_col_lin[idx_y] = self.V1i
+        Y_val_lin[idx_y] = -G
+        idx_y +=1
+
+        ####voltage sources
+        Y_row_lin[idx_y] = self.V1r
+        Y_col_lin[idx_y] = self.V1r#self.to_Bnode_r
+        Y_val_lin[idx_y] = 1
+        idx_y +=1
+
+        Y_row_lin[idx_y] = self.V1i
+        Y_col_lin[idx_y] = self.V1i#self.to_Bnode_i
+        Y_val_lin[idx_y] = 1
         idx_y +=1
         
         return idx_y#NEED TO ACCOUNT FOR THE LOSSES

@@ -76,6 +76,6 @@ class Slack:
         
     def initialize(self,Vinit): #not sure if I need this
         ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii
-        Vinit[self.node_P_Slack] += self.Pinit#(abs(self.Vset)*np.cos(self.ang))
-        Vinit[self.node_Q_Slack] += self.Qinit#(abs(self.Vset)*np.sin(self.ang))
+        Vinit[self.node_P_Slack] += self.Pinit/100#(abs(self.Vset)*np.cos(self.ang))
+        Vinit[self.node_Q_Slack] += self.Qinit/100#(abs(self.Vset)*np.sin(self.ang))
         #return Vinit

@@ -42,11 +42,11 @@ class PowerFlow:
         #print(Ydense)
 
         ####found this code online in order to check for 0 row or 0 cols
-        check_row = np.all((Ydense == 0), axis=1)
-        print('Rows that contain only zero:')
-        for i in range(len(check_row)):
-            if check_row[i]:
-                print('Row: ', i)
+        # check_row = np.all((Ydense == 0), axis=1)
+        # print('Rows that contain only zero:')
+        # for i in range(len(check_row)):
+        #     if check_row[i]:
+        #         print('Row: ', i)
         # check_col = np.all((Ydense == 0), axis=0)
         # print('Columns that contain only zero:')
         # for j in range(len(check_col)):
@@ -201,7 +201,7 @@ class PowerFlow:
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
-        while err_max > tol and NR_count <100:#20 should be setting["max iter"]
+        while err_max > tol and NR_count <self.max_iters:#20 should be setting["max iter"]
             ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
 
 
@@ -242,5 +242,5 @@ class PowerFlow:
             J_vec_non_lin = np.zeros(size_Y)
             #idx_y = Hidx_y
             v = v_sol
-        print(v_check)
+        #print(v_check)
         return v_sol
