@@ -38,15 +38,15 @@ class PowerFlow:
         Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
         #print(type(Y_mtx))
         #print(type(J_vec))
-        #Ydense = Y_mtx.todense() 
+        Ydense = Y_mtx.todense() 
         #print(Ydense)
 
         ####found this code online in order to check for 0 row or 0 cols
-        # check_row = np.all((Ydense == 0), axis=1)
-        # print('Rows that contain only zero:')
-        # for i in range(len(check_row)):
-        #     if check_row[i]:
-        #         print('Row: ', i)
+        check_row = np.all((Ydense == 0), axis=1)
+        print('Rows that contain only zero:')
+        for i in range(len(check_row)):
+            if check_row[i]:
+                print('Row: ', i)
         # check_col = np.all((Ydense == 0), axis=0)
         # print('Columns that contain only zero:')
         # for j in range(len(check_col)):
@@ -93,8 +93,8 @@ class PowerFlow:
         for shunts in shunt:
             idx_y = shunts.sparse_stamp_lin(Y_row_lin, Y_col_lin,Y_val_lin, idx_y)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
         
-        #for transformers in transformer:
-        #    transformers.sparse_stamp_lin()
+        for transformers in transformer:
+            idx_y = transformers.sparse_stamp_lin(Y_row_lin, Y_col_lin,Y_val_lin, idx_y, prev_v)
 
         ###not sure what this needs to return
         return idx_y
@@ -149,7 +149,7 @@ class PowerFlow:
 
         """
         #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES(POSSIBLY CALL IN INITIALIZE)
-        new_size = size_Y*10
+        new_size = size_Y*50
         row = np.zeros(size_Y*10)
         col = np.zeros(size_Y*10)
         val = np.zeros(size_Y*10)
@@ -201,7 +201,7 @@ class PowerFlow:
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
-        while err_max > tol and NR_count <1000:#20 should be setting["max iter"]
+        while err_max > tol and NR_count <100:#20 should be setting["max iter"]
             ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
 
 

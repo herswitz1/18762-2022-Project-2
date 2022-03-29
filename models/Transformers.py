@@ -57,10 +57,10 @@ class Transformers:
         # You should also add some other class functions you deem necessary for stamping,
         # initializing, and processing results.
     def assign_nodes(self,bus): #not sure if I need this
-        self.V1r = Buses._node_index.__next__()#not sure where to use these
-        self.V1i = Buses._node_index.__next__()#V
-        self.I2r = Buses._node_index.__next__()#
-        self.I2i = Buses._node_index.__next__()
+        # self.V1r = Buses._node_index.__next__()#not sure where to use these
+        # self.V1i = Buses._node_index.__next__()#V
+        # self.I2r = Buses._node_index.__next__()#
+        # self.I2i = Buses._node_index.__next__()
         self.from_Bnode_r = bus[Buses.bus_key_[self.from_bus]].node_Vr#Vr2
         self.from_Bnode_i = bus[Buses.bus_key_[self.from_bus]].node_Vi#Vi2 (c)
         self.to_Bnode_r = bus[Buses.bus_key_[self.to_bus]].node_Vr#Vr2 (b)
@@ -108,7 +108,7 @@ class Transformers:
         #real secondary imaganiary 
         Y_row_lin[idx_y] = self.to_Bnode_r
         Y_col_lin[idx_y] = self.to_Bnode_i
-        Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_i]*np.sin(self.ang))
+        Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_i]*np.cos(self.ang))
         idx_y +=1
 
         #imaginary secondary real
@@ -123,7 +123,7 @@ class Transformers:
         Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_i]*np.cos(self.ang))
         idx_y +=1
         
-        #NEED TO ACCOUNT FOR THE LOSSES
+        return idx_y#NEED TO ACCOUNT FOR THE LOSSES
         
     def initialize(self): #not sure if I need this
         pass

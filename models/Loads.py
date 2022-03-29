@@ -42,6 +42,8 @@ class Loads:
         self.id = Loads._ids.__next__()#NOT SURE IF THIS SHOULD BE AT THE TOP OR END
         self.node_Vrl = None
         self.node_Vil = None
+        self.P_base = self.P/100
+        self.Q_base = self.Q/100
 
 
         # You will need to implement the remainder of the __init__ function yourself.
@@ -54,15 +56,20 @@ class Loads:
 
     def sparse_stamp_non_lin(self,Y_row, Y_col,Y_val,J_vec, idx_y,prev_v): 
         Vrl_il = ((np.square(prev_v[self.node_Vrl]))+(np.square(prev_v[self.node_Vil]))) #this is the sum of the previous real voltage square and imaginary voltage squared
-        Irl = ((self.P*prev_v[self.node_Vrl]) + (self.Q*prev_v[self.node_Vil]))/(Vrl_il) ##current value of real load current
-        Iil = ((self.P*prev_v[self.node_Vil]) - (self.Q*prev_v[self.node_Vrl]))/(Vrl_il) ##current value of imaginary load current
+        Irl = ((self.P_base*prev_v[self.node_Vrl]) + (self.Q_base*prev_v[self.node_Vil]))/(Vrl_il) ##current value of real load current
+        Iil = ((self.P_base*prev_v[self.node_Vil]) - (self.Q_base*prev_v[self.node_Vrl]))/(Vrl_il) ##current value of imaginary load current
         ##calculating partials
         #real
-        dIrl_dvrl = ((Vrl_il)*self.P - (self.P*prev_v[self.node_Vrl] + self.Q*prev_v[self.node_Vil])*(2*prev_v[self.node_Vrl]))/(np.square(Vrl_il)) #dIrl/dVrl
-        dIrl_dvil = ((Vrl_il)*self.Q - (self.P*prev_v[self.node_Vrl] + self.Q*prev_v[self.node_Vil])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIrl/dVil
+        dIrl_dvrl = ((Vrl_il)*self.P_base - (self.P_base*prev_v[self.node_Vrl] + self.Q_base*prev_v[self.node_Vil])*(2*prev_v[self.node_Vrl]))/(np.square(Vrl_il)) #dIrl/dVrl
+        dIrl_dvil = ((Vrl_il)*self.Q_base - (self.P_base*prev_v[self.node_Vrl] + self.Q_base*prev_v[self.node_Vil])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIrl/dVil
         #imaginary
-        dIil_dvrl = ((Vrl_il)*(-self.Q) - (self.P*prev_v[self.node_Vil] - self.Q*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vrl]))/(np.square(Vrl_il)) #dIil/dVrl
-        dIil_dvil = ((Vrl_il)*self.P - (self.P*prev_v[self.node_Vil] - self.Q*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIil/dVil
+        dIil_dvrl = ((Vrl_il)*(-self.Q_base) - (self.P_base*prev_v[self.node_Vil] - self.Q_base*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vrl]))/(np.square(Vrl_il)) #dIil/dVrl
+        dIil_dvil = ((Vrl_il)*self.P_base - (self.P_base*prev_v[self.node_Vil] - self.Q_base*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIil/dVil
+        ###
+        ##History
+       
+        
+        
         ###Makeing stamps
         #real current row
         ##Y(i,i) 1
@@ -70,8 +77,8 @@ class Loads:
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIrl_dvrl
         #J(i)
-        J_vec[self.node_Vrl] = -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
-
+        J_vec[self.node_Vrl] += -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
+        #self.HistR = J_vec[self.node_Vrl]
         idx_y += 1
         ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrl
@@ -85,8 +92,8 @@ class Loads:
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIil_dvrl
         ##J(j)
-        J_vec[self.node_Vil] = -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
-
+        J_vec[self.node_Vil] += -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
+        #self.HistI = J_vec[self.node_Vil]
         idx_y += 1
         ##Y(j,j) 4
         Y_row[idx_y] = self.node_Vil
@@ -100,6 +107,6 @@ class Loads:
         pass
         
     def initialize(self, Vinit): #For liniear components stamp 0(not sure what to give them iniitlaly)
-        #Vinit[self.node_Vrl] = 1#These are wrong
-        #Vinit[self.node_Vil] = 1
+        #Vinit[self.node_Vrl] = self.P#These are wrong
+        #Vinit[self.node_Vil] = self.Q
         pass
