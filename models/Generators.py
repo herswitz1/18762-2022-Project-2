@@ -136,7 +136,7 @@ class Generators:
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dV_dvr#-2*prev_v[self.node_Vrg]
         
-        ##J(g)(SOMETHING FEELS OFF WITH THIS)
+        ##J(g)
         J_vec[self.node_Qg] += -(V_exact - (dV_dvr*prev_v[self.node_Vrg]) -(dV_dvi*prev_v[self.node_Vig]))#-(np.square(self.Vset) -(prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(prev_v[self.node_Vig]*prev_v[self.node_Vig]))
         
         idx_y +=1

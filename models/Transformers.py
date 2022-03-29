@@ -69,114 +69,164 @@ class Transformers:
 
     def sparse_stamp_lin(self,Y_row_lin, Y_col_lin, Y_val_lin, idx_y,prev_v): #not sure if I need this
         G = self.r/(np.square(self.r)+np.square(self.x))
-        B = self.x/(np.square(self.r)+np.square(self.x))
+        B = -self.x/(np.square(self.r)+np.square(self.x))
         
-        ###probably doing all of this wrong
-        #Real primary real
+        
+        #Real primary real (row 1)(a,a)
         Y_row_lin[idx_y] = self.from_Bnode_r
         Y_col_lin[idx_y] = self.from_Bnode_r
-        Y_val_lin[idx_y] = self.tr*(prev_v[self.from_Bnode_r]*np.cos(self.ang))
+        Y_val_lin[idx_y] = self.tr*np.cos(self.ang)#(prev_v[self.from_Bnode_r]*np.cos(self.ang))
         idx_y +=1
-
-        #real primary imaganiary 
+        #real primary imaganiary (row 1)(a,b)
         Y_row_lin[idx_y] = self.from_Bnode_r
         Y_col_lin[idx_y] = self.from_Bnode_i
-        Y_val_lin[idx_y] = self.tr*(- prev_v[self.from_Bnode_i]*np.sin(self.ang))
+        Y_val_lin[idx_y] = -self.tr*np.sin(self.ang)#(-prev_v[self.from_Bnode_i]*np.sin(self.ang))
         idx_y +=1
 
-        #imaginary primary real
+        #imaginary primary real(row 2)(b,a)
         Y_row_lin[idx_y] = self.from_Bnode_i
         Y_col_lin[idx_y] = self.from_Bnode_r
-        Y_val_lin[idx_y] = self.tr*(prev_v[self.from_Bnode_r]*np.sin(self.ang))
+        Y_val_lin[idx_y] = self.tr*np.sin(self.ang)#(prev_v[self.from_Bnode_r]*np.sin(self.ang))
         idx_y +=1
-
-        #imaginary primary imaganiary 
+        #imaginary primary imaganiary (row 2)(b,b)
         Y_row_lin[idx_y] = self.from_Bnode_i
         Y_col_lin[idx_y] = self.from_Bnode_i
-        Y_val_lin[idx_y] = self.tr*(prev_v[self.from_Bnode_i]*np.cos(self.ang))
+        Y_val_lin[idx_y] = self.tr*np.cos(self.ang)#(prev_v[self.from_Bnode_i]*np.cos(self.ang))
         idx_y +=1
 
         ###FEEL LIKE J VECTOR SHOULD BE STAMPED WITH SELF.VIR AND THE OTHER EX
 
         #SECONDAY
-        #Real secondary real
+        ##real loses (row 3) (c,a)
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.from_Bnode_r
+        Y_val_lin[idx_y] = G
+        idx_y +=1
+        #row3 (c,b)
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.from_Bnode_i
+        Y_val_lin[idx_y] = -B
+        idx_y +=1
+        #Real secondary real(row 3) (c,c)
         Y_row_lin[idx_y] = self.to_Bnode_r
         Y_col_lin[idx_y] = self.to_Bnode_r
-        Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_r]*np.cos(self.ang))
+        Y_val_lin[idx_y] = -self.tr*np.cos(self.ang)#(prev_v[self.to_Bnode_r]*np.cos(self.ang))
         idx_y +=1
-
-        #real secondary imaganiary 
+        #real secondary imaganiary (row 3)(c,d)
         Y_row_lin[idx_y] = self.to_Bnode_r
         Y_col_lin[idx_y] = self.to_Bnode_i
-        Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_i]*np.cos(self.ang))
+        Y_val_lin[idx_y] = -self.tr*np.sin(self.ang)#(prev_v[self.to_Bnode_i]*np.sin(self.ang))
+        idx_y +=1
+         #row 3 (c,e)
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.V1r
+        Y_val_lin[idx_y] = -G
+        idx_y +=1
+        #row 3 (c,f)
+        Y_row_lin[idx_y] = self.to_Bnode_r
+        Y_col_lin[idx_y] = self.V1i
+        Y_val_lin[idx_y] = B
         idx_y +=1
 
-        #imaginary secondary real
+
+        ##imaginary losses (row 4) (d,a)
+        Y_row_lin[idx_y] = self.to_Bnode_i
+        Y_col_lin[idx_y] = self.from_Bnode_r
+        Y_val_lin[idx_y] = B
+        idx_y +=1
+        #row 4 (d,b)
+        Y_row_lin[idx_y] = self.to_Bnode_i
+        Y_col_lin[idx_y] = self.from_Bnode_i
+        Y_val_lin[idx_y] = G
+        idx_y +=1
+        #imaginary secondary real (row 4)(d,c)
         Y_row_lin[idx_y] = self.to_Bnode_i
         Y_col_lin[idx_y] = self.to_Bnode_r
-        Y_val_lin[idx_y] = -self.tr*(-prev_v[self.to_Bnode_r]*np.sin(self.ang))
+        Y_val_lin[idx_y] = self.tr*np.sin(self.ang)#(prev_v[self.to_Bnode_r]*np.sin(self.ang))
         idx_y +=1
-
-        #imaginary secondary imaganiary 
+        #imaginary secondary imaganiary (row 4) (d,d)
         Y_row_lin[idx_y] = self.to_Bnode_i
         Y_col_lin[idx_y] = self.to_Bnode_i
-        Y_val_lin[idx_y] = -self.tr*(prev_v[self.to_Bnode_i]*np.cos(self.ang))
+        Y_val_lin[idx_y] = -self.tr*np.cos(self.ang)#(prev_v[self.to_Bnode_i]*np.cos(self.ang))
         idx_y +=1
-        ###EVERYTHING ABOVE THIS POINT SEEMS TO WORK
         ###loss in secondary
-        ##real loses
-        Y_row_lin[idx_y] = self.to_Bnode_r
-        Y_col_lin[idx_y] = self.from_Bnode_r
-        Y_val_lin[idx_y] = G
-        idx_y +=1
-
-        Y_row_lin[idx_y] = self.to_Bnode_r
-        Y_col_lin[idx_y] = self.from_Bnode_i
-        Y_val_lin[idx_y] = B
-        idx_y +=1
-
-        Y_row_lin[idx_y] = self.to_Bnode_r
-        Y_col_lin[idx_y] = self.V1r
-        Y_val_lin[idx_y] = -G
-        idx_y +=1
-
-        Y_row_lin[idx_y] = self.to_Bnode_r
-        Y_col_lin[idx_y] = self.V1i
-        Y_val_lin[idx_y] = -B
-        idx_y +=1
-
-        ##imaginary losses
-        Y_row_lin[idx_y] = self.to_Bnode_i
-        Y_col_lin[idx_y] = self.from_Bnode_r
-        Y_val_lin[idx_y] = -B
-        idx_y +=1
-
-        Y_row_lin[idx_y] = self.to_Bnode_i
-        Y_col_lin[idx_y] = self.from_Bnode_i
-        Y_val_lin[idx_y] = G
-        idx_y +=1
-
+        #row 4 (d,e)
         Y_row_lin[idx_y] = self.to_Bnode_i
         Y_col_lin[idx_y] = self.V1r
-        Y_val_lin[idx_y] = B
+        Y_val_lin[idx_y] = -B
         idx_y +=1
-
+        #row 4 (d,f)
         Y_row_lin[idx_y] = self.to_Bnode_i
         Y_col_lin[idx_y] = self.V1i
         Y_val_lin[idx_y] = -G
         idx_y +=1
 
-        ####voltage sources
+        # ####voltage sources row(5) (e,e)
+        # Y_row_lin[idx_y] = self.V1r
+        # Y_col_lin[idx_y] = self.V1r#self.to_Bnode_r
+        # Y_val_lin[idx_y] = 1
+        # idx_y +=1
+        # ##row 6 (f,f)
+        # Y_row_lin[idx_y] = self.V1i
+        # Y_col_lin[idx_y] = self.V1i#self.to_Bnode_i
+        # Y_val_lin[idx_y] = 1
+        # idx_y +=1
+
+        ###IF I DO NOT USE THE STUFF BELOW IT SEEMS TO CONVERGE FAIRLY QUICKLY BUT THE ANGLES ARE OFF
+        ###
+        #row 5 (e,a)
         Y_row_lin[idx_y] = self.V1r
-        Y_col_lin[idx_y] = self.V1r#self.to_Bnode_r
+        Y_col_lin[idx_y] = self.from_Bnode_r
+        Y_val_lin[idx_y] = -G
+        idx_y +=1
+        #row 5 (e,b)
+        Y_row_lin[idx_y] = self.V1r
+        Y_col_lin[idx_y] = self.from_Bnode_i
+        Y_val_lin[idx_y] = B
+        idx_y +=1
+        # #row5 (e,c)
+        Y_row_lin[idx_y] = self.V1r
+        Y_col_lin[idx_y] = self.to_Bnode_r#self.to_Bnode_r
         Y_val_lin[idx_y] = 1
         idx_y +=1
-
-        Y_row_lin[idx_y] = self.V1i
-        Y_col_lin[idx_y] = self.V1i#self.to_Bnode_i
-        Y_val_lin[idx_y] = 1
+        #row 5 (e,e)
+        Y_row_lin[idx_y] = self.V1r
+        Y_col_lin[idx_y] = self.V1r
+        Y_val_lin[idx_y] = G
+        idx_y +=1
+        #row 5 (e,f)
+        Y_row_lin[idx_y] = self.V1r
+        Y_col_lin[idx_y] = self.V1i
+        Y_val_lin[idx_y] = -B
         idx_y +=1
         
+        ####ROW 6
+        #row 6 (f,a)
+        Y_row_lin[idx_y] = self.V1i
+        Y_col_lin[idx_y] = self.from_Bnode_r
+        Y_val_lin[idx_y] = -B
+        idx_y +=1
+        #row 6 (f,b)
+        Y_row_lin[idx_y] = self.V1i
+        Y_col_lin[idx_y] = self.from_Bnode_i
+        Y_val_lin[idx_y] = -G
+        idx_y +=1
+        #row6 (f,d)
+        Y_row_lin[idx_y] = self.V1i
+        Y_col_lin[idx_y] = self.to_Bnode_i#self.to_Bnode_r
+        Y_val_lin[idx_y] = 1
+        idx_y +=1
+        #row 6 (f,e)
+        Y_row_lin[idx_y] = self.V1i
+        Y_col_lin[idx_y] = self.V1r
+        Y_val_lin[idx_y] = B
+        idx_y +=1
+        #row 6 (f,f)
+        Y_row_lin[idx_y] = self.V1i
+        Y_col_lin[idx_y] = self.V1i
+        Y_val_lin[idx_y] = G
+        idx_y +=1
+
         return idx_y#NEED TO ACCOUNT FOR THE LOSSES
         
     def initialize(self): #not sure if I need this
