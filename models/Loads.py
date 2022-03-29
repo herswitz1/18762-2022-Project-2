@@ -76,30 +76,31 @@ class Loads:
         Y_row[idx_y] = self.node_Vrl
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIrl_dvrl
-        #J(i)
-        J_vec[self.node_Vrl] += -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
-        #self.HistR = J_vec[self.node_Vrl]
+        
         idx_y += 1
         ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrl
         Y_col[idx_y] = self.node_Vil
         Y_val[idx_y] =  dIrl_dvil
         idx_y +=1
-
+        #J(i)
+        J_vec[self.node_Vrl] += -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
+        #self.HistR = J_vec[self.node_Vrl]
         ##imaginary current row
         ##Y(j,i) 3
         Y_row[idx_y] = self.node_Vil
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIil_dvrl
-        ##J(j)
-        J_vec[self.node_Vil] += -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
-        #self.HistI = J_vec[self.node_Vil]
+        
         idx_y += 1
         ##Y(j,j) 4
         Y_row[idx_y] = self.node_Vil
         Y_col[idx_y] = self.node_Vil
         Y_val[idx_y] = dIil_dvil
         idx_y +=1
+        ##J(j)
+        J_vec[self.node_Vil] += -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
+        #self.HistI = J_vec[self.node_Vil]
 
         return idx_y
 

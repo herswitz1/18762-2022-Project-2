@@ -69,110 +69,93 @@ class Branches:
         #Y(a,a)
         Y_row[idx_y] = self.from_Bnode_r #i
         Y_col[idx_y] = self.from_Bnode_r #j
-        Y_val[idx_y] = G#real resistance from node (noteice that there may be some sign error)
-        idx_y +=1
-        #Y(a,c)
-        Y_row[idx_y] = self.from_Bnode_r
-        Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = -G#real resistance to node
+        Y_val[idx_y] = G
         idx_y +=1
         #Y(a,b)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = -B+SH
+        Y_val[idx_y] = -B-SH #sum of the shunt current leaving
+        idx_y +=1
+        #Y(a,c)
+        Y_row[idx_y] = self.from_Bnode_r
+        Y_col[idx_y] = self.to_Bnode_r
+        Y_val[idx_y] = -G
         idx_y +=1
         #Y(a,d)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = B#-SH
         idx_y +=1
-        # #Y(a,a) shunt real at from node
-        # Y_row[idx_y] = self.from_Bnode_r
-        # Y_col[idx_y] = self.from_Bnode_i
-        # Y_val[idx_y] = SH
-        # idx_y +=1
-
-        #I2r(row 3)
-        #Y(c,a)
-        Y_row[idx_y] = self.to_Bnode_r
-        Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = -G
-        idx_y +=1
-        #Y(c,c)
-        Y_row[idx_y] = self.to_Bnode_r
-        Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = G
-        idx_y +=1
-        #Y(c,b)
-        Y_row[idx_y] = self.to_Bnode_r
-        Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = B
-        idx_y +=1
-        #Y(c,d)
-        Y_row[idx_y] = self.to_Bnode_r
-        Y_col[idx_y] = self.to_Bnode_i
-        Y_val[idx_y] = -B+SH
-        idx_y +=1
-        # #Y(b,b) real shunt at to node
-        # Y_row[idx_y] = self.to_Bnode_r
-        # Y_col[idx_y] = self.to_Bnode_i
-        # Y_val[idx_y] = -SH
-        # idx_y +=1
 
         #Imaginary
         #Ii1 (row 2)
         #Y(b,a)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = B-SH #
-        idx_y +=1
-        #Y(b,c)
-        Y_row[idx_y] = self.from_Bnode_i
-        Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = -B
+        Y_val[idx_y] = B+SH #
         idx_y +=1
         #Y(b,b)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.from_Bnode_i
         Y_val[idx_y] = G#+SH
         idx_y +=1
+        #Y(b,c)
+        Y_row[idx_y] = self.from_Bnode_i
+        Y_col[idx_y] = self.to_Bnode_r
+        Y_val[idx_y] = -B#-SH
+        idx_y +=1
         #Y(b,d)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = -G
         idx_y +=1
-        #Y(c,c)shunt for imaginary from node
-        # Y_row[idx_y] = self.from_Bnode_i
-        # Y_col[idx_y] = self.from_Bnode_i
-        # Y_val[idx_y] = -SH
-        # idx_y +=1
 
+        #real current 2
+        #I2r(row 3)
+        #Y(c,a)
+        Y_row[idx_y] = self.to_Bnode_r
+        Y_col[idx_y] = self.from_Bnode_r
+        Y_val[idx_y] = -G
+        idx_y +=1
+        #Y(c,b)
+        Y_row[idx_y] = self.to_Bnode_r
+        Y_col[idx_y] = self.from_Bnode_i
+        Y_val[idx_y] = B#-SH
+        idx_y +=1
+        #Y(c,c)
+        Y_row[idx_y] = self.to_Bnode_r
+        Y_col[idx_y] = self.to_Bnode_r
+        Y_val[idx_y] = G
+        idx_y +=1
+        #Y(c,d)
+        Y_row[idx_y] = self.to_Bnode_r
+        Y_col[idx_y] = self.to_Bnode_i
+        Y_val[idx_y] = -B-SH
+        idx_y +=1
+        
+        #imaginary current 2
         #I2i
         #Y(d,a)(row 4)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = B #this may be negative
-        idx_y +=1
-        #Y(d,c)
-        Y_row[idx_y] = self.to_Bnode_i
-        Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = -B-SH
+        Y_val[idx_y] = -B#+SH 
         idx_y +=1
         #Y(d,b)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.from_Bnode_i
         Y_val[idx_y] = -G
         idx_y +=1
+        #Y(d,c)
+        Y_row[idx_y] = self.to_Bnode_i
+        Y_col[idx_y] = self.to_Bnode_r
+        Y_val[idx_y] = B+SH
+        idx_y +=1
         #Y(d,d)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.to_Bnode_i
         Y_val[idx_y] = G
         idx_y +=1
-        # #Y(d,d) shunt for imagainary to node
-        # Y_row[idx_y] = self.to_Bnode_i
-        # Y_col[idx_y] = self.to_Bnode_i
-        # Y_val[idx_y] = -SH
-        # idx_y +=1
+        
 
         return idx_y
 
