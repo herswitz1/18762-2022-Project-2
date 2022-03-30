@@ -51,7 +51,7 @@ class Slack:
         Y_row[idx_y] = self.node_P_Slack
         Y_col[idx_y] = self.Vr_index
         Y_val[idx_y] = 1#abs(self.Vset)*np.cos(self.ang) #maybe this should be 1
-        J_vec[self.node_P_Slack] += abs(self.Vset)*np.cos(self.ang)#prev_v[self.node_P_Slack] #may nnot need this node
+        J_vec[self.node_P_Slack] += abs(self.Vset)*np.cos(np.deg2rad(self.ang))#prev_v[self.node_P_Slack] #may nnot need this node
         idx_y +=1
         
         Y_row[idx_y] = self.Vr_index
@@ -64,7 +64,7 @@ class Slack:
         Y_row[idx_y] = self.node_Q_Slack
         Y_col[idx_y] = self.Vi_index
         Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
-        J_vec[self.node_Q_Slack] += abs(self.Vset)*np.sin(self.ang)#prev_v[self.node_Q_Slack]
+        J_vec[self.node_Q_Slack] += abs(self.Vset)*np.sin(np.deg2rad(self.ang))#prev_v[self.node_Q_Slack]
         idx_y +=1
 
         Y_row[idx_y] = self.Vi_index

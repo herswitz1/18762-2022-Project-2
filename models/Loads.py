@@ -68,8 +68,6 @@ class Loads:
         ###
         ##History
        
-        
-        
         ###Makeing stamps
         #real current row
         ##Y(i,i) 1
