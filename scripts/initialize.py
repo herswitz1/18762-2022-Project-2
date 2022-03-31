@@ -1,5 +1,5 @@
 
-def initialize(v_init,slack, bus,generator, load):#:generator,transformer,branch, shunt,load): 
+def initialize(v_init,slack, bus,generator):#:generator,transformer,branch, shunt,load): 
     #NOT SURE WHAT GOES HERE BUT HAVE TO THOUGHTS
     #1. COULD BE WERE WE DO SOMTHING LIKE DC OR AC INTIALIZATION AND GET FIRST V VECTOR GUESS
     # 2.WHERE WE CALL EACH OBJECT AND ASSING THE NODED INDEXES  
@@ -16,8 +16,8 @@ def initialize(v_init,slack, bus,generator, load):#:generator,transformer,branch
     #    branches.initialize(v_init)
     #for shunts in shunt:
     #    shunts.initialize(v_init)
-    for loads in load:
-        loads.initialize(v_init)
+    # for loads in load:
+    #     loads.initialize(v_init)
     
     #do I need a line to specifically return v_init
     pass

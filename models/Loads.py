@@ -106,6 +106,5 @@ class Loads:
         pass
         
     def initialize(self, Vinit): #For liniear components stamp 0(not sure what to give them iniitlaly)
-        #Vinit[self.node_Vrl] = self.P#These are wrong
-        #Vinit[self.node_Vil] = self.Q
+        
         pass
