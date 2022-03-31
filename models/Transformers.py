@@ -91,11 +91,11 @@ class Transformers:
         c_i = self.I1i
         #row 1
         # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_r, t_r, T_c)
-        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_r, t_i, T_s)
+        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_r, t_i, -T_s)
         idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_r, c_r, 1)
         #idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_r, c_i, -1)
         #row 2
-        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_i, t_r, -T_s)
+        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_i, t_r, T_s)
         # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_i, t_i, T_c)
         idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_i, c_i, 1)
         #idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, f_i, c_r, -1)
@@ -132,16 +132,16 @@ class Transformers:
         idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, t_i, t_r, B)
         idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, t_i, t_i, G)
         #row 7
-        #idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, c_r, -T_c)
-        #idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, c_i, -T_s)
-        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, e_r, -T_c)
-        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, e_i, T_s)
+        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, t_r, -T_c)
+        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, t_i, -T_s)
+        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, e_r, T_c)
+        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, e_i, -T_s)
         idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_r, f_r, 1)
         #row 8
-        #idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, c_r, T_s)
-        #idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, c_i, -T_c)
-        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, e_r, -T_s)
-        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, e_i, -T_c)
+        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, t_r, T_s)
+        # idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, t_i, -T_c)
+        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, e_r, T_s)
+        idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, e_i, T_c)
         idx_y = self.stamp(Y_row_lin, Y_col_lin, Y_val_lin, idx_y, c_i, f_i, 1)
         
         
