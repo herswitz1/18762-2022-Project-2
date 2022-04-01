@@ -82,13 +82,17 @@ def solve(TESTCASE, SETTINGS):
     # TODO: PART 1, STEP 2 - Complete the PowerFlow class and build your run_powerflow function to solve Equivalent
     #  Circuit Formulation powerflow. The function will return a final solution vector v. Remove run_pf and the if
     #  condition once you've finished building your solver.
+    NR_counter = 0
+    Dense_eff = []
+    Sparse_eff = []
     run_pf = True
     if run_pf:
-        v = powerflow.run_powerflow(v_init, bus, slack, generator, transformer, branch, shunt, load, size_Y)
+        v = powerflow.run_powerflow(v_init, bus, slack, generator, transformer, branch, shunt, load, size_Y, Dense_eff, Sparse_eff)
         print(v)
         
     # # # Process Results # # #
     # TODO: PART 1, STEP 3 - Write a process_results function to compute the relevant results (voltages, powers,
     #  and anything else of interest) and find the voltage profile (maximum and minimum voltages in the case).
     #  You can decide which arguments to pass to this function yourself.
-    process_results(v, bus)
+    #print(NR_counter)
+    process_results(v, bus,Dense_eff,Sparse_eff)

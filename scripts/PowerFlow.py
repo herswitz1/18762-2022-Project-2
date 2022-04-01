@@ -2,6 +2,8 @@ import numpy as np
 from numpy.linalg import solve
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import spsolve
+import time as TI
+from scripts import global_vars
 
 class PowerFlow:
 
@@ -27,7 +29,7 @@ class PowerFlow:
         self.max_iters = max_iters
         self.enable_limiting = enable_limiting
 
-    def solve(self,Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y):
+    def solve(self,Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y,Dense_eff, Sparse_eff):
         #essitially takes in the Y and J matrix in order to solve 
         #V_k = np.linalg.solve(Y,J)
         Y_row = Y_row_lin + Y_row_non_lin
@@ -38,8 +40,15 @@ class PowerFlow:
         Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
         #print(type(Y_mtx))
         #print(type(J_vec))
+
+        ##GETTING DENSE MATRIX AND CHECKING THE EFFICENCY
         Ydense = Y_mtx.todense() 
         #print(Ydense)
+        start_d = TI.perf_counter_ns()
+        v = np.linalg.solve(Ydense,J_vec)
+        end_time_d = TI.perf_counter_ns()
+        eff_d = end_time_d -start_d
+        Dense_eff.append(eff_d)
 
         ####found this code online in order to check for 0 row or 0 cols
         # check_row = np.all((Ydense == 0), axis=1)
@@ -54,7 +63,12 @@ class PowerFlow:
         #         print('Column: ', j)
         ################################
 
+        
+        start = TI.perf_counter_ns()
         V_k = spsolve(Y_mtx, J_vec)
+        end_time = TI.perf_counter_ns()
+        eff = end_time -start
+        Sparse_eff.append(eff)
         #V_k = solve(Ydense, J_vec)
         ##DO I NEED TO KEEP TRACK TO THE PREVIOUS V VECTOR IN ORDER TO CALCULAT THE ERROR
 
@@ -131,7 +145,8 @@ class PowerFlow:
                       branch,
                       shunt,
                       load,
-                      size_Y):
+                      size_Y,
+                      Dense_eff, Sparse_eff):
         """Runs a positive sequence power flow using the Equivalent Circuit Formulation.
 
         Args:
@@ -196,12 +211,12 @@ class PowerFlow:
         # TODO: PART 1, STEP 2.2 - Initialize the NR variables
         err_max = 2#really bad intial guess  # maximum error at the current NR iteration
         tol = self.tol#settings["Tolerance"]#None  # chosen NR tolerance
-        NR_count = 0  # current NR iteration(HOW SHOULD WE USE THIS?)
+        NR_counter = 0  # current NR iteration(HOW SHOULD WE USE THIS?)
         err = 1000
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
-        while err_max > tol and NR_count <self.max_iters:#20 should be setting["max iter"]
+        while err_max > tol and NR_counter <self.max_iters:#20 should be setting["max iter"]
             ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
 
 
@@ -215,7 +230,7 @@ class PowerFlow:
             # TODO: PART 1, STEP 2.5 - Complete the solve function which solves system of equations Yv = J. The
             #  function should return a new v_sol.
             #  You need to decide the input arguments and return values.
-            v_sol = self.solve(Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y)
+            v_sol = self.solve(Y_row_lin, Y_row_non_lin, Y_col_lin, Y_col_non_lin, Y_val_lin, Y_val_non_lin, J_vec_lin, J_vec_non_lin,size_Y, Dense_eff, Sparse_eff)
 
             # # # Compute The Error at the current NR iteration # # #
             # TODO: PART 1, STEP 2.6 - Finish the check_error function which calculates the maximum error, err_max
@@ -235,12 +250,12 @@ class PowerFlow:
                 self.apply_limiting()
             else:
                 pass
-            NR_count +=1
+            NR_counter +=1
             Y_row_non_lin = np.zeros(new_size)
             Y_col_non_lin = np.zeros(new_size)
             Y_val_non_lin = np.zeros(new_size)
             J_vec_non_lin = np.zeros(size_Y)
             #idx_y = Hidx_y
             v = v_sol
-        #print(v_check)
+        print(NR_counter-1)
         return v_sol
