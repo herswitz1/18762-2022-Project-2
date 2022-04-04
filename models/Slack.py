@@ -50,8 +50,7 @@ class Slack:
         #Real slack stamp 1
         Y_row[idx_y] = self.node_P_Slack
         Y_col[idx_y] = self.Vr_index
-        Y_val[idx_y] = 1#abs(self.Vset)*np.cos(self.ang) #maybe this should be 1
-        J_vec[self.node_P_Slack] += abs(self.Vset)*np.cos(np.deg2rad(self.ang))#prev_v[self.node_P_Slack] #may nnot need this node
+        Y_val[idx_y] = 1#abs(self.Vset)*np.cos(self.ang) 
         idx_y +=1
         
         Y_row[idx_y] = self.Vr_index
@@ -59,23 +58,24 @@ class Slack:
         Y_val[idx_y] = 1 #maybe this should be 1
         #J_vec[self.Vr_index] = 0#prev_v[self.node_P_Slack]
         idx_y +=1
+        J_vec[self.node_P_Slack] += abs(self.Vset)*np.cos(np.deg2rad(self.ang))#prev_v[self.node_P_Slack] #may nnot need this node
         
         #Imaginary slack stamp 2
         Y_row[idx_y] = self.node_Q_Slack
         Y_col[idx_y] = self.Vi_index
-        Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
-        J_vec[self.node_Q_Slack] += abs(self.Vset)*np.sin(np.deg2rad(self.ang))#prev_v[self.node_Q_Slack]
+        Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)
         idx_y +=1
 
         Y_row[idx_y] = self.Vi_index
         Y_col[idx_y] = self.node_Q_Slack
-        Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)#maybe this shoud be 1
+        Y_val[idx_y] = 1#abs(self.Vset)*np.sin(self.ang)
         #J_vec[self.Vi_index] += 0# prev_v[self.node_Q_Slack]
         idx_y +=1
+        J_vec[self.node_Q_Slack] += abs(self.Vset)*np.sin(np.deg2rad(self.ang))#prev_v[self.node_Q_Slack]
         return idx_y
         
     def initialize(self,Vinit): #not sure if I need this
         ##given voltage magnitude and angel along with intial p and Q we can find and stamp initila Ir and Ii
-        Vinit[self.node_P_Slack] += self.Pinit/100#(abs(self.Vset)*np.cos(self.ang))
-        Vinit[self.node_Q_Slack] += self.Qinit/100#(abs(self.Vset)*np.sin(self.ang))
+        Vinit[self.node_P_Slack] += self.Pinit/100
+        Vinit[self.node_Q_Slack] += self.Qinit/100
         #return Vinit

@@ -76,5 +76,6 @@ class Buses:
         elif self.Type == 2:
             v_init[self.node_Vr] += self.Vm_init*np.cos(np.deg2rad(self.Va_init))
             v_init[self.node_Vi] += self.Vm_init*np.sin(np.deg2rad(self.Va_init))
-            #v_init[self.node_Q] =1 #need to go into generator for the corresponding bus and pull out Q
-        #return Vinit
+            
+
+    

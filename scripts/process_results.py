@@ -10,7 +10,7 @@ def process_results(v, bus, Dense_eff, Sparse_eff):
     matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_14.mat')#this is for the 14 bus case
     
     ##getting the desired infromation out of file
-    ##need to change first indice for each case
+    ##IMPORTANT:EACH TIME CHANGINGING CHASE NEED TO ADJUST 'RESULT_14CASE' TO NEW CASE CONSIDERING
     mp_res = matpower_data['result_14case']['bus'][0,0]
     #putting desired information into vectors
     mp_res_mag = np.zeros(len(mp_res))

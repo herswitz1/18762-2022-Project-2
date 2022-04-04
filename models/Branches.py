@@ -51,7 +51,6 @@ class Branches:
         # initializing, and processing results.
         
     def assign_nodes(self,bus): #we shoud have 4 node indeces, 2 for real and 2 for imaginary
-        #know these are not correct
         self.from_Bnode_r = bus[Buses.bus_key_[self.from_bus]].node_Vr#Vnr (a)
         self.from_Bnode_i = bus[Buses.bus_key_[self.from_bus]].node_Vi#Vni (c)
         self.to_Bnode_r = bus[Buses.bus_key_[self.to_bus]].node_Vr#Vmr (b)
@@ -74,7 +73,7 @@ class Branches:
         #Y(a,b)
         Y_row[idx_y] = self.from_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = -B-SH #sum of the shunt current leaving
+        Y_val[idx_y] = -B-SH #
         idx_y +=1
         #Y(a,c)
         Y_row[idx_y] = self.from_Bnode_r
@@ -102,7 +101,7 @@ class Branches:
         #Y(b,c)
         Y_row[idx_y] = self.from_Bnode_i
         Y_col[idx_y] = self.to_Bnode_r
-        Y_val[idx_y] = -B#-SH
+        Y_val[idx_y] = -B
         idx_y +=1
         #Y(b,d)
         Y_row[idx_y] = self.from_Bnode_i
@@ -120,7 +119,7 @@ class Branches:
         #Y(c,b)
         Y_row[idx_y] = self.to_Bnode_r
         Y_col[idx_y] = self.from_Bnode_i
-        Y_val[idx_y] = B#-SH
+        Y_val[idx_y] = B
         idx_y +=1
         #Y(c,c)
         Y_row[idx_y] = self.to_Bnode_r
@@ -138,7 +137,7 @@ class Branches:
         #Y(d,a)(row 4)
         Y_row[idx_y] = self.to_Bnode_i
         Y_col[idx_y] = self.from_Bnode_r
-        Y_val[idx_y] = -B#+SH 
+        Y_val[idx_y] = -B
         idx_y +=1
         #Y(d,b)
         Y_row[idx_y] = self.to_Bnode_i

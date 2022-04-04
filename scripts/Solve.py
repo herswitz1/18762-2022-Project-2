@@ -50,8 +50,6 @@ def solve(TESTCASE, SETTINGS):
     for ele in slack:
         ele.assign_nodes(bus)
 
-    #SHOULD i DO ASSIGN NODES FOR ALL THE OTHER OBJECTS
-    ##NOT SURE IF THIS IS WHERE i SHOULD BE CALLING THESE
     for ele in generator:
         ele.assign_nodes(bus)
     for ele in transformer:
@@ -83,6 +81,7 @@ def solve(TESTCASE, SETTINGS):
     #  Circuit Formulation powerflow. The function will return a final solution vector v. Remove run_pf and the if
     #  condition once you've finished building your solver.
     NR_counter = 0
+    #INITIALIZES EMPYT ARRAYS THAT KEEP TRACK OF EFFICENCY
     Dense_eff = []
     Sparse_eff = []
     run_pf = True

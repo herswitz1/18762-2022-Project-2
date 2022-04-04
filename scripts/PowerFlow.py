@@ -37,7 +37,6 @@ class PowerFlow:
         Y_val = Y_val_lin + Y_val_non_lin
         J_vec = J_vec_lin + J_vec_non_lin
         #print(J_vec)
-        #maybe need a J_val vect and a J col vector
         Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
         #print(Y_mtx)
         #print(J_vec)
@@ -51,7 +50,7 @@ class PowerFlow:
         eff_d = end_time_d -start_d
         Dense_eff.append(eff_d)
 
-        ####found this code online in order to check for 0 row or 0 cols
+        ####found this code online in order to check for 0 row or 0 cols for some reason does not work for colums
         # check_row = np.all((Ydense == 0), axis=1)
         # print('Rows that contain only zero:')
         # for i in range(len(check_row)):
@@ -63,27 +62,24 @@ class PowerFlow:
         #     if check_col[j]:
         #         print('Column: ', j)
         ################################
-
         
         start = TI.perf_counter_ns()
         V_k = spsolve(Y_mtx, J_vec)
         end_time = TI.perf_counter_ns()
         eff = end_time -start
         Sparse_eff.append(eff)
-        #V_k = solve(Ydense, J_vec)
-        ##DO I NEED TO KEEP TRACK TO THE PREVIOUS V VECTOR IN ORDER TO CALCULAT THE ERROR
 
         return V_k
         
 
-    def apply_limiting(self,v_sol, generator):
+    def apply_limiting(self,v_sol, bus):
         #not sure what happens here possible huristics
         #need to check if it is within paramerters
         #for generators in generators:
         #generator.apply_lim
         #loop thorugh all the generators and check if each generator is above or below its limit
-        for generators in generator:
-            generators.apply_lim(v_sol)
+        for buses in bus:
+            bus.apply_lim(v_sol)
 
         ##for loop for slack
 
@@ -96,47 +92,28 @@ class PowerFlow:
 
     def check_error(self,v_current,v_prev):
         #CHECKES THE NR TO SEE IF IT CONVERGES IF SO THIS IS OUR V VECTOR
-        #hist_nr =np.amax(np.abs(v_prev))
-        #err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
-
         err_check = np.abs(v_current)-np.abs(v_prev)
         hist_nr =np.amax(np.abs(v_prev))
         err_max = np.abs(np.amax(np.abs(v_current))-hist_nr)
-        #v_prev = v_current
 
         return err_max
         
 
     def stamp_linear(self,Y_row_lin,Y_col_lin,Y_val_lin,branch,shunt,transformer,prev_v, idx_y):
         #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
-        #EX:
-        #for gen in generators:
-        #generators.stamp_lin(Y,j)
-        #for branch in branches:
-        #branches.stamp_lin(Y,J)
-        #etc
-        #idx_y = 0
         for branches in branch:
-           idx_y= branches.sparse_stamp_lin(Y_row_lin,Y_col_lin,Y_val_lin, idx_y)#these are the other imputs that are needed in branches
+           idx_y= branches.sparse_stamp_lin(Y_row_lin,Y_col_lin,Y_val_lin, idx_y)
 
         for shunts in shunt:
-            idx_y = shunts.sparse_stamp_lin(Y_row_lin, Y_col_lin,Y_val_lin, idx_y)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
+            idx_y = shunts.sparse_stamp_lin(Y_row_lin, Y_col_lin,Y_val_lin, idx_y)
         
         for transformers in transformer:
             idx_y = transformers.sparse_stamp_lin(Y_row_lin, Y_col_lin,Y_val_lin, idx_y, prev_v)
 
-        ###not sure what this needs to return
         return idx_y
 
     def stamp_nonlinear(self,Y_row_non_lin,Y_col_non_lin,Y_val_non_lin,J_vec_non_lin, generator,load,slack, prev_v,idx_y):
-        #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP LINEAR PARTS 
-        #EX:
-        #for gen in generators:
-        #generators.stamp_non_lin(Y,j)
-        #for branch in branches:
-        #branches.stamp_non_lin(Y,J)
-        #etc
-        #idx_y = 0 #not sure about this
+        #GO THROUGH EACH EACH CLASS OF OBJECT AND STAMP NONLINEAR PARTS 
 
         for generators in generator:
             idx_y=generators.sparse_stamp_non_lin(Y_row_non_lin,Y_col_non_lin, Y_val_non_lin,J_vec_non_lin, idx_y, prev_v)#NOT SURE ABOUT HOW TO HANDLE SHUNTS AT THE MOMENT
@@ -147,9 +124,7 @@ class PowerFlow:
         for slack in slack: #NOT SURE IF SOMETHING IS WRONG WITH THIS CONFIGURATION
             idx_y = slack.sparse_stamp_non_lin(Y_row_non_lin, Y_col_non_lin, Y_val_non_lin, J_vec_non_lin, idx_y, prev_v)
 
-        #NOT SURE WHAT TO RETURN
-        
-        #return idx_y
+        #DO NOT RETURN IDX_Y THIS ALLOWS US TO JUST STAMP OVER THOSE POSISTIONS
 
     def run_powerflow(self,
                       v_init,
@@ -178,29 +153,8 @@ class PowerFlow:
             v(np.array): The final solution vector.
 
         """
-        #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES(POSSIBLY CALL IN INITIALIZE)
+        #CREATING THE ARRAYS TO STORE OUR SPARSE MATRIXES
         new_size = size_Y*50
-        row = np.zeros(size_Y*10)
-        col = np.zeros(size_Y*10)
-        val = np.zeros(size_Y*10)
-        # Y_row_lin = []
-        # Y_col_lin = []
-        # Y_val_lin =[]
-        # Y_row_non_lin = []
-        # Y_col_non_lin = []
-        # Y_val_non_lin = []
-        # J_vec_lin = []
-        # J_vec_non_lin = []
-        #######WHAT i THINK IT SHOULD BE
-        # Y_row_lin = np.zeros(size_Y)
-        # Y_col_lin = np.zeros(size_Y)
-        # Y_val_lin =np.zeros(size_Y)
-        # Y_row_non_lin = np.zeros(size_Y)
-        # Y_col_non_lin = np.zeros(size_Y)
-        # Y_val_non_lin = np.zeros(size_Y)
-        # J_vec_lin = np.zeros(size_Y)
-        # J_vec_non_lin = np.zeros(size_Y)
-        ##############
         Y_row_lin = np.zeros(new_size)
         Y_col_lin = np.zeros(new_size)
         Y_val_lin =np.zeros(new_size)
@@ -224,17 +178,14 @@ class PowerFlow:
 
         # # # Initialize While Loop (NR) Variables # # #
         # TODO: PART 1, STEP 2.2 - Initialize the NR variables
-        err_max = 2#really bad intial guess  # maximum error at the current NR iteration
-        tol = self.tol#settings["Tolerance"]#None  # chosen NR tolerance
-        NR_counter = 0  # current NR iteration(HOW SHOULD WE USE THIS?)
+        err_max = 2#ERROR JUST NEEDS TO BE GREATER THAN TOLERANCE FOR FIRST ITERATION # maximum error at the current NR iteration
+        tol = self.tol # chosen NR tolerance
+        NR_counter = 0  # current NR iteration
         err = 1000
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
         while err_max > tol and NR_counter <self.max_iters:#20 should be setting["max iter"]
-            ##NEED SOME MECHANISM TO KEEP TRACK TO WHERE LIN AND NONLINEAR STOP AND END RESPECTIVELY SO THAT i CAN RESET NONLIN TO 0 AND RESTAMP IT
-
-
             # # # Stamp Nonlinear Power Grid Elements into Y matrix # # #
             # TODO: PART 1, STEP 2.4 - Complete the stamp_nonlinear function which stamps all nonlinear power grid
             #  elements. This function should call the stamp_nonlinear function of each nonlinear element and return
@@ -252,6 +203,7 @@ class PowerFlow:
             #  You need to decide the input arguments and return values.
             err_max = self.check_error(v_sol, v)
             print(err_max)
+            #WHEN I WAS NOT GETTING CONVERGENCES I WANTED TO SEE IF THE SMALLEST ERROR ALSO HAPPENED BE VERY CLOSE TO WHAT WAS THE ACUTAL RESULT
             if err_max <err:
                 err = err_max
                 v_check = v_sol
@@ -262,9 +214,10 @@ class PowerFlow:
             #  limiting. Also, complete the else condition. Do not complete this step until you've finished Part 1.
             #  You need to decide the input arguments and return values.
             if self.enable_limiting and err_max > tol:
-                self.apply_limiting(v_sol,generator)
+                self.apply_limiting(v_sol,bus)
             else:
                 pass
+            #SETTING ALL NON LINEAR STORED ARRAYS BACK TO 0
             NR_counter +=1
             Y_row_non_lin = np.zeros(new_size)
             Y_col_non_lin = np.zeros(new_size)
@@ -272,5 +225,5 @@ class PowerFlow:
             J_vec_non_lin = np.zeros(size_Y)
             #idx_y = Hidx_y
             v = v_sol
-        print(NR_counter-1)
+        print("NUMBER OF NR ITERATIONS " + str(NR_counter-1))
         return v_sol

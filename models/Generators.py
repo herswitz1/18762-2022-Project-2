@@ -5,7 +5,6 @@ import numpy as np
 from models.Buses import Buses
 
 ##PV BUS
-##SOMETHING FEELS OFF ABOUT HOW I AM STAMPING MY J VECTOR
 class Generators:
     _ids = count(0)
     RemoteBusGens = dict()
@@ -55,14 +54,11 @@ class Generators:
         self.lamb = 500
     
 
-        self.id = self._ids.__next__() #not sure if this should go before or after all my initializing
+        self.id = self._ids.__next__() 
         self.node_Vrg = None
         self.node_Vig = None
         self.node_Qg = None
-        ##THINK WE WILL HAVE TO ASSIGN 
-        self.HistR = 0
-        self.HistI = 0
-        self.HistQ = 0
+        
 
         # You will need to implement the remainder of the __init__ function yourself.
         # You should also add some other class functions you deem necessary for stamping,
@@ -92,10 +88,7 @@ class Generators:
         ##Y(i,i) 1
         Y_row[idx_y] = self.node_Vrg
         Y_col[idx_y] = self.node_Vrg
-        Y_val[idx_y] = dIrg_dVrg
-        #J(i)(probably only need Irg)(maybe instead i need to do node_Vrg)
-        J_vec[self.node_Vrg] += -(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current(may not need all of these terms)
-        #self.HistR = J_vec[self.node_Vrg]
+        Y_val[idx_y] = dIrg_dVrg  
         idx_y += 1
         ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrg
@@ -107,15 +100,14 @@ class Generators:
         Y_col[idx_y] = self.node_Qg
         Y_val[idx_y] = dIrg_dQg
         idx_y +=1
-
+        #J(i)
+        J_vec[self.node_Vrg] += -(Irg - (dIrg_dVrg*prev_v[self.node_Vrg]) - (dIrg_dVig*prev_v[self.node_Vig]) - (dIrg_dQg*prev_v[self.node_Qg]))#j stamp for real current
+       
         ##imaginary current row
         ##Y(j,i) 4
         Y_row[idx_y] = self.node_Vig
         Y_col[idx_y] = self.node_Vrg
         Y_val[idx_y] = dIig_dVrg
-        ##J(j)(probably only need Iig)
-        J_vec[self.node_Vig] += -(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]) -(dIig_dQg*prev_v[self.node_Qg]))#J stamp for imaginary current
-        #self.HistI = J_vec[self.node_Vig]
         idx_y += 1
         ##Y(j,j) 5
         Y_row[idx_y] = self.node_Vig
@@ -127,6 +119,8 @@ class Generators:
         Y_col[idx_y] = self.node_Qg
         Y_val[idx_y] = dIig_dQg
         idx_y +=1
+         ##J(j)
+        J_vec[self.node_Vig] += -(Iig - (dIig_dVrg*prev_v[self.node_Vrg]) - (dIig_dVig*prev_v[self.node_Vig]) -(dIig_dQg*prev_v[self.node_Qg]))#J stamp for imaginary current
         
         ##Reactivepower row
         V_exact = -np.square(self.Vset) + np.square(prev_v[self.node_Vrg]) + np.square(prev_v[self.node_Vig])
@@ -135,19 +129,17 @@ class Generators:
         ##Y(g,i) 7
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vrg
-        Y_val[idx_y] = dV_dvr#-2*prev_v[self.node_Vrg]
-        
-        ##J(g)
-        J_vec[self.node_Qg] += -(V_exact - (dV_dvr*prev_v[self.node_Vrg]) -(dV_dvi*prev_v[self.node_Vig]))#-(np.square(self.Vset) -(prev_v[self.node_Vrg]*prev_v[self.node_Vrg]) -(prev_v[self.node_Vig]*prev_v[self.node_Vig]))
-        
+        Y_val[idx_y] = dV_dvr 
         idx_y +=1
         
         #Y(g,j) 8
         Y_row[idx_y] = self.node_Qg
         Y_col[idx_y] = self.node_Vig
-        Y_val[idx_y] = dV_dvi#-2*prev_v[self.node_Vig]
+        Y_val[idx_y] = dV_dvi
         idx_y +=1
         
+         ##J(g)
+        J_vec[self.node_Qg] += -(V_exact - (dV_dvr*prev_v[self.node_Vrg]) -(dV_dvi*prev_v[self.node_Vig]))
         return idx_y
 
     def apply_lim(self,Vsol):
@@ -160,9 +152,7 @@ class Generators:
         else:
             pass
 
-    def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
-        
-        Vinit[self.node_Qg] = self.Qinit/100
-        
+    def initialize(self,Vinit): 
+        Vinit[self.node_Qg] += self.Qinit/100
         pass
         

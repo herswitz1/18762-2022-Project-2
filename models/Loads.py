@@ -74,7 +74,6 @@ class Loads:
         Y_row[idx_y] = self.node_Vrl
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIrl_dvrl
-        
         idx_y += 1
         ##Y(i,j) 2
         Y_row[idx_y] = self.node_Vrl
@@ -84,12 +83,12 @@ class Loads:
         #J(i)
         J_vec[self.node_Vrl] += -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
         #self.HistR = J_vec[self.node_Vrl]
+
         ##imaginary current row
         ##Y(j,i) 3
         Y_row[idx_y] = self.node_Vil
         Y_col[idx_y] = self.node_Vrl
         Y_val[idx_y] = dIil_dvrl
-        
         idx_y += 1
         ##Y(j,j) 4
         Y_row[idx_y] = self.node_Vil
@@ -101,9 +100,6 @@ class Loads:
         #self.HistI = J_vec[self.node_Vil]
 
         return idx_y
-
-    def stamp_non_lin(self): #not sure if I need this
-        pass
         
     def initialize(self, Vinit): #For liniear components stamp 0(not sure what to give them iniitlaly)
         
