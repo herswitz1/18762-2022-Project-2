@@ -52,6 +52,7 @@ class Generators:
         self.RMPCT = RMPCT
         self.gen_type = gen_type
         self.P_base = self.P/100
+        self.lamb = 500
     
 
         self.id = self._ids.__next__() #not sure if this should go before or after all my initializing
@@ -148,6 +149,17 @@ class Generators:
         idx_y +=1
         
         return idx_y
+
+    def apply_lim(self,Vsol):
+        if Vsol[self.node_Qg] > self.Qmax or Vsol[self.node_Qg] < self.Qmin:
+            #apply one form of limiting
+            #return vevector with that sam
+            #for Vrw feel like I need to go to the slack bus and get voltage and angle
+            Vsol[self.node_Qg]= ((self.Qmax - self.Qmin)/(1-np.exp(self.lamb*((np.sqrt(np.square(Vrw)+np.square(Viw)))-self.Vset))))+self.Qmin
+            pass
+        else:
+            pass
+
     def initialize(self,Vinit): ##MENTIONED SOMETHNG ABOUT JUST SETTING AS 1S AND 0S
         
         Vinit[self.node_Qg] = self.Qinit/100

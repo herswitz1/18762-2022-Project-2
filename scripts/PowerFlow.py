@@ -36,10 +36,11 @@ class PowerFlow:
         Y_col = Y_col_lin + Y_col_non_lin
         Y_val = Y_val_lin + Y_val_non_lin
         J_vec = J_vec_lin + J_vec_non_lin
+        #print(J_vec)
         #maybe need a J_val vect and a J col vector
         Y_mtx = csr_matrix((Y_val, (Y_row, Y_col)), shape=(size_Y,size_Y)) #CONVERTING TO A SPARSE MATRIX THAT CAN BE PUT INTO SOLVER
-        #print(type(Y_mtx))
-        #print(type(J_vec))
+        #print(Y_mtx)
+        #print(J_vec)
 
         ##GETTING DENSE MATRIX AND CHECKING THE EFFICENCY
         Ydense = Y_mtx.todense() 
@@ -75,8 +76,22 @@ class PowerFlow:
         return V_k
         
 
-    def apply_limiting(self):
+    def apply_limiting(self,v_sol, generator):
         #not sure what happens here possible huristics
+        #need to check if it is within paramerters
+        #for generators in generators:
+        #generator.apply_lim
+        #loop thorugh all the generators and check if each generator is above or below its limit
+        for generators in generator:
+            generators.apply_lim(v_sol)
+
+        ##for loop for slack
+
+        ##for loop for shunt
+
+        #for loop for transformer
+
+
         pass
 
     def check_error(self,v_current,v_prev):
@@ -247,7 +262,7 @@ class PowerFlow:
             #  limiting. Also, complete the else condition. Do not complete this step until you've finished Part 1.
             #  You need to decide the input arguments and return values.
             if self.enable_limiting and err_max > tol:
-                self.apply_limiting()
+                self.apply_limiting(v_sol,generator)
             else:
                 pass
             NR_counter +=1

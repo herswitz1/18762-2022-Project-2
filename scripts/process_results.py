@@ -5,13 +5,13 @@ from tabulate import tabulate
 def process_results(v, bus, Dense_eff, Sparse_eff):
     ##selecting which case considering
     #4 bus case
-    matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_4.mat')
+    #matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_4.mat')
     #14 Bus case
-    #matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_14.mat')#this is for the 14 bus case
+    matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_14.mat')#this is for the 14 bus case
     
     ##getting the desired infromation out of file
     ##need to change first indice for each case
-    mp_res = matpower_data['result_4case']['bus'][0,0]
+    mp_res = matpower_data['result_14case']['bus'][0,0]
     #putting desired information into vectors
     mp_res_mag = np.zeros(len(mp_res))
     mp_res_ang = np.zeros(len(mp_res))
