@@ -4,15 +4,17 @@ from models.Buses import Buses
 from tabulate import tabulate
 def process_results(v, bus, Dense_eff, Sparse_eff):
     ##selecting which case considering
-    #4 bus case
-    #matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_4.mat')
-    #14 Bus case
-    matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_14.mat')#this is for the 14 bus case
-    #118 bus case
-    #matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_118.mat')
+    #4 bus case C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_4.mat
+    #matpower_data = loadmat(r'')
+    #14 Bus case C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_14.mat
+    #matpower_data = loadmat(r'testcases/result_14case')#this is for the 14 bus case
+    #118 bus case C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_118.mat
+    matpower_data = loadmat(r'testcases/result_118case')
     ##getting the desired infromation out of file
+    ###################################################
     ##IMPORTANT:EACH TIME CHANGINGING CHASE NEED TO ADJUST 'RESULT_14CASE' TO NEW CASE CONSIDERING
-    mp_res = matpower_data['result_14case']['bus'][0,0]
+    ###################################################
+    mp_res = matpower_data['result_118case']['bus'][0,0]
     #putting desired information into vectors
     mp_res_mag = np.zeros(len(mp_res))
     mp_res_ang = np.zeros(len(mp_res))
