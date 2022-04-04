@@ -76,6 +76,32 @@ class Buses:
         elif self.Type == 2:
             v_init[self.node_Vr] += self.Vm_init*np.cos(np.deg2rad(self.Va_init))
             v_init[self.node_Vi] += self.Vm_init*np.sin(np.deg2rad(self.Va_init))
-            
+    
+    def apply_lim(self, v_sol,v):
+        max_step = .3
+        V_max = 1.5
+        V_min = -5
+        delt_r = v_sol[self.node_Vr]-v[self.node_Vr]
+        de_s_r = np.sign(delt_r)
+        delt_i = v_sol[self.node_Vi]-v[self.node_Vi]
+        de_s_i = np.sign(delt_i)
+        x_r = v[self.node_Vr] + de_s_r*np.min([np.abs(delt_r),max_step])
+        x_i = v[self.node_Vi] + de_s_i*np.min([np.abs(delt_i),max_step])
+        if x_r > V_max:
+            v_sol[self.node_Vr] = V_max
+        elif x_r <V_min:
+            v_sol[self.node_Vr] = V_min
+        else:
+            v_sol[self.node_Vr] = x_r
+        if x_i > V_max:
+            v_sol[self.node_Vi] = V_max
+        elif x_i <V_min:
+            v_sol[self.node_Vi] = V_min
+        else:
+            v_sol[self.node_Vi] = x_i
+
+        pass
+
+        
 
     

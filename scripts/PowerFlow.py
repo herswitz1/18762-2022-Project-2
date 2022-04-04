@@ -72,14 +72,16 @@ class PowerFlow:
         return V_k
         
 
-    def apply_limiting(self,v_sol, bus):
+    def apply_limiting(self, v_sol, v, bus):
         #not sure what happens here possible huristics
         #need to check if it is within paramerters
         #for generators in generators:
         #generator.apply_lim
         #loop thorugh all the generators and check if each generator is above or below its limit
+        #del_v_max = np.amax(v_sol)-np.amax(v)
+        #sig = np.sign
         for buses in bus:
-            bus.apply_lim(v_sol)
+            buses.apply_lim(v_sol, v)
 
         ##for loop for slack
 
@@ -214,7 +216,7 @@ class PowerFlow:
             #  limiting. Also, complete the else condition. Do not complete this step until you've finished Part 1.
             #  You need to decide the input arguments and return values.
             if self.enable_limiting and err_max > tol:
-                self.apply_limiting(v_sol,bus)
+                self.apply_limiting(v_sol,v,bus)
             else:
                 pass
             #SETTING ALL NON LINEAR STORED ARRAYS BACK TO 0
