@@ -78,9 +78,9 @@ class Buses:
             v_init[self.node_Vi] += self.Vm_init*np.sin(np.deg2rad(self.Va_init))
     
     def apply_lim(self, v_sol,v):
-        max_step = .3
-        V_max = 1.5
-        V_min = -5
+        max_step = .5
+        V_max = 1.55
+        V_min = -1.55
         delt_r = v_sol[self.node_Vr]-v[self.node_Vr]
         de_s_r = np.sign(delt_r)
         delt_i = v_sol[self.node_Vi]-v[self.node_Vi]

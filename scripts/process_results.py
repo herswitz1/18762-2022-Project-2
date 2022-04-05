@@ -5,11 +5,11 @@ from tabulate import tabulate
 def process_results(v, bus, Dense_eff, Sparse_eff):
     ##selecting which case considering
     #4 bus case C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_4.mat
-    #matpower_data = loadmat(r'')
+    #matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_4.mat')
     #14 Bus case C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_14.mat
     matpower_data = loadmat(r'testcases/result_14case')#this is for the 14 bus case
     #118 bus case C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_118.mat
-    #matpower_data = loadmat(r'testcases/result_118case')
+    #matpower_data = loadmat(r'C:\Users\hersc\OneDrive\Desktop\matpower\matpower7.1\mp_r_118.mat')
     ##getting the desired infromation out of file
     ###################################################
     ##IMPORTANT:EACH TIME CHANGINGING CHASE NEED TO ADJUST 'RESULT_14CASE' TO NEW CASE CONSIDERING

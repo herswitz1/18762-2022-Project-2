@@ -12,7 +12,7 @@ casename = 'testcases/IEEE-14_prior_solution.RAW'
 settings = {
     "Tolerance": 1E-5,
     "Max Iters": 1000,
-    "Limiting":  True,
+    "Limiting":  False,
 }
 
 # run the solver

@@ -204,7 +204,7 @@ class PowerFlow:
             # TODO: PART 1, STEP 2.6 - Finish the check_error function which calculates the maximum error, err_max
             #  You need to decide the input arguments and return values.
             err_max = self.check_error(v_sol, v)
-            print(err_max)
+            #print(err_max)
             #WHEN I WAS NOT GETTING CONVERGENCES I WANTED TO SEE IF THE SMALLEST ERROR ALSO HAPPENED BE VERY CLOSE TO WHAT WAS THE ACUTAL RESULT
             if err_max <err:
                 err = err_max

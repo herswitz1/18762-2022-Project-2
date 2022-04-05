@@ -55,16 +55,19 @@ class Loads:
         pass
 
     def sparse_stamp_non_lin(self,Y_row, Y_col,Y_val,J_vec, idx_y,prev_v): 
-        Vrl_il = ((np.square(prev_v[self.node_Vrl]))+(np.square(prev_v[self.node_Vil]))) #this is the sum of the previous real voltage square and imaginary voltage squared
-        Irl = ((self.P_base*prev_v[self.node_Vrl]) + (self.Q_base*prev_v[self.node_Vil]))/(Vrl_il) ##current value of real load current
-        Iil = ((self.P_base*prev_v[self.node_Vil]) - (self.Q_base*prev_v[self.node_Vrl]))/(Vrl_il) ##current value of imaginary load current
+        Vr_k = prev_v[self.node_Vrl]
+        Vi_k = prev_v[self.node_Vil]
+
+        Vrl_il = ((np.square(Vr_k))+(np.square(Vi_k))) #this is the sum of the previous real voltage square and imaginary voltage squared
+        Irl = ((self.P_base*Vr_k) + (self.Q_base*Vi_k))/(Vrl_il) ##current value of real load current
+        Iil = ((self.P_base*Vi_k) - (self.Q_base*Vr_k))/(Vrl_il) ##current value of imaginary load current
         ##calculating partials
         #real
-        dIrl_dvrl = ((Vrl_il)*self.P_base - (self.P_base*prev_v[self.node_Vrl] + self.Q_base*prev_v[self.node_Vil])*(2*prev_v[self.node_Vrl]))/(np.square(Vrl_il)) #dIrl/dVrl
-        dIrl_dvil = ((Vrl_il)*self.Q_base - (self.P_base*prev_v[self.node_Vrl] + self.Q_base*prev_v[self.node_Vil])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIrl/dVil
+        dIrl_dvrl = ((Vrl_il)*self.P_base - (self.P_base*Vr_k + self.Q_base*Vi_k)*(2*Vr_k))/(np.square(Vrl_il)) #dIrl/dVrl
+        dIrl_dvil = ((Vrl_il)*self.Q_base - (self.P_base*Vr_k + self.Q_base*Vi_k)*(2*Vi_k))/(np.square(Vrl_il)) #dIrl/dVil
         #imaginary
-        dIil_dvrl = ((Vrl_il)*(-self.Q_base) - (self.P_base*prev_v[self.node_Vil] - self.Q_base*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vrl]))/(np.square(Vrl_il)) #dIil/dVrl
-        dIil_dvil = ((Vrl_il)*self.P_base - (self.P_base*prev_v[self.node_Vil] - self.Q_base*prev_v[self.node_Vrl])*(2*prev_v[self.node_Vil]))/(np.square(Vrl_il)) #dIil/dVil
+        dIil_dvrl = ((Vrl_il)*(-self.Q_base) - (self.P_base*Vi_k - self.Q_base*Vr_k)*(2*Vr_k))/(np.square(Vrl_il)) #dIil/dVrl
+        dIil_dvil = ((Vrl_il)*self.P_base - (self.P_base*Vi_k - self.Q_base*Vr_k)*(2*Vi_k))/(np.square(Vrl_il)) #dIil/dVil
         ###
         ##History
        
@@ -81,7 +84,7 @@ class Loads:
         Y_val[idx_y] =  dIrl_dvil
         idx_y +=1
         #J(i)
-        J_vec[self.node_Vrl] += -(Irl - (dIrl_dvrl*prev_v[self.node_Vrl]) - (dIrl_dvil*prev_v[self.node_Vil]))#j stamp for real current
+        J_vec[self.node_Vrl] += -(Irl - (dIrl_dvrl*Vr_k) - (dIrl_dvil*Vi_k))#j stamp for real current
         #self.HistR = J_vec[self.node_Vrl]
 
         ##imaginary current row
@@ -96,7 +99,7 @@ class Loads:
         Y_val[idx_y] = dIil_dvil
         idx_y +=1
         ##J(j)
-        J_vec[self.node_Vil] += -(Iil - (dIil_dvrl*prev_v[self.node_Vrl]) - (dIil_dvil*prev_v[self.node_Vil]))#J stamp for imaginary current
+        J_vec[self.node_Vil] += -(Iil - (dIil_dvrl*Vr_k) - (dIil_dvil*Vi_k))#J stamp for imaginary current
         #self.HistI = J_vec[self.node_Vil]
 
         return idx_y
