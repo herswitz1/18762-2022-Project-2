@@ -59,15 +59,17 @@ class Buses:
             self.node_Vr = self._node_index.__next__()
             self.node_Vi = self._node_index.__next__()
             if self.Type == 3:
-                print('Bus='+str(self.Bus) +' ' + str(self.node_Vr) + '_real voltage slack index ' +  str(self.node_Vi) + '_imganary voltage slack index')
+                pass
+                #print('Bus='+str(self.Bus) +' ' + str(self.node_Vr) + '_real voltage slack index ' +  str(self.node_Vi) + '_imganary voltage slack index')
             else:
-                 print('Bus='+str(self.Bus) +' ' + str(self.node_Vr) + '_real voltage PQ index ' +  str(self.node_Vi) + '_imganary voltage PQ index')
+                #print('Bus='+str(self.Bus) +' ' + str(self.node_Vr) + '_real voltage PQ index ' +  str(self.node_Vi) + '_imganary voltage PQ index')
+                pass
         # If PV Bus
         elif self.Type == 2:
             self.node_Vr = self._node_index.__next__()
             self.node_Vi = self._node_index.__next__()
             self.node_Q = self._node_index.__next__()
-            print('Bus='+str(self.Bus) +' ' +str(self.node_Vr) + '_real voltage PV ' +  str(self.node_Vi) + '_imganary voltage PV ' + str(self.node_Q) + '_q')
+            #print('Bus='+str(self.Bus) +' ' +str(self.node_Vr) + '_real voltage PV ' +  str(self.node_Vi) + '_imganary voltage PV ' + str(self.node_Q) + '_q')
     
     def initialize(self, v_init):
         if self.Type == 1 or self.Type == 3:
@@ -78,9 +80,9 @@ class Buses:
             v_init[self.node_Vi] += self.Vm_init*np.sin(np.deg2rad(self.Va_init))
     
     def apply_lim(self, v_sol,v):
-        max_step = .5
-        V_max = 1.55
-        V_min = -1.55
+        max_step = .1
+        V_max = 5
+        V_min = -5
         delt_r = v_sol[self.node_Vr]-v[self.node_Vr]
         de_s_r = np.sign(delt_r)
         delt_i = v_sol[self.node_Vi]-v[self.node_Vi]

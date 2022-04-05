@@ -41,14 +41,14 @@ class PowerFlow:
         #print(Y_mtx)
         #print(J_vec)
 
-        ##GETTING DENSE MATRIX AND CHECKING THE EFFICENCY
-        Ydense = Y_mtx.todense() 
-        #print(Ydense)
-        start_d = TI.perf_counter_ns()
-        v = np.linalg.solve(Ydense,J_vec)
-        end_time_d = TI.perf_counter_ns()
-        eff_d = end_time_d -start_d
-        Dense_eff.append(eff_d)
+        ##GETTING DENSE MATRIX AND CHECKING THE EFFICENCY(DO NOT USE THIS WHEN DOING VERY LARGE CASE YOU WILL BE SITTING FOR HOURS)
+        # Ydense = Y_mtx.todense() 
+        # #print(Ydense)
+        # start_d = TI.perf_counter_ns()
+        # v = np.linalg.solve(Ydense,J_vec)
+        # end_time_d = TI.perf_counter_ns()
+        # eff_d = end_time_d -start_d
+        # Dense_eff.append(eff_d)
 
         ####found this code online in order to check for 0 row or 0 cols for some reason does not work for colums
         # check_row = np.all((Ydense == 0), axis=1)
@@ -187,7 +187,7 @@ class PowerFlow:
         # # # Begin Solving Via NR # # #
         # TODO: PART 1, STEP 2.3 - Complete the NR While Loop
         Hidx_y = idx_y
-        while err_max > tol and NR_counter <self.max_iters:#20 should be setting["max iter"]
+        while err_max > tol and NR_counter <100:#self.max_iters:#20 should be setting["max iter"]
             # # # Stamp Nonlinear Power Grid Elements into Y matrix # # #
             # TODO: PART 1, STEP 2.4 - Complete the stamp_nonlinear function which stamps all nonlinear power grid
             #  elements. This function should call the stamp_nonlinear function of each nonlinear element and return
@@ -221,6 +221,7 @@ class PowerFlow:
                 pass
             #SETTING ALL NON LINEAR STORED ARRAYS BACK TO 0
             NR_counter +=1
+            print(NR_counter)
             Y_row_non_lin = np.zeros(new_size)
             Y_col_non_lin = np.zeros(new_size)
             Y_val_non_lin = np.zeros(new_size)
